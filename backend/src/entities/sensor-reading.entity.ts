@@ -13,14 +13,16 @@ export class SensorReading {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  sensor_type: string; // 'TEMP', 'HUMI', 'LIGHT'
+
   @Column('float')
-  reading_value: number; // Lưu con số như 30.5, 60...
+  reading_value: number;
 
   @CreateDateColumn()
   recorded_at: Date;
 
-  // Khóa ngoại: device_id nối với bảng DEVICES
-  @ManyToOne(() => Device, (device) => device.readings)
+  @ManyToOne(() => Device)
   @JoinColumn({ name: 'device_id' })
   device: Device;
 }

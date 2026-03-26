@@ -7,6 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Area } from './area.entity';
 import { Device } from './device.entity';
 
 @Entity('ACTION_LOGS')
@@ -14,22 +15,29 @@ export class ActionLog {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50 })
-  action_type: string; // VD: 'AUTO_ALERT' hoặc 'MANUAL_CONTROL'
+  @Column()
+  action_type: string; // VD: 'TURN_ON', 'CHANGE_FOOD', 'ALERT_HIGH_TEMP'
 
-  @Column({ length: 100 })
-  action_value: string; // VD: 'Bật quạt do nhiệt độ cao', 'Nhân viên tự tắt đèn'
+  @Column()
+  action_value: string; // VD: 'Bật quạt', 'Đổi sang Thịt bò', 'Nhiệt độ lên 30 độ'
+
+  @Column()
+  trigger_source: string; // 3 loại: 'MANUAL', 'AUTO', 'SCHEDULE'
 
   @CreateDateColumn()
   created_at: Date;
 
-  // Khóa ngoại: user_id - người thực hiện
-  @ManyToOne(() => User, (user) => user.action_logs, { nullable: true })
+  // Ai làm? (Có thể NULL nếu là AUTO hoặc SCHEDULE)
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  // Khóa ngoại: device_id Thông tin thiết bị
-  @ManyToOne(() => Device, (device) => device.action_logs)
+  // Xảy ra ở Tủ nào?
+  @ManyToOne(() => Area)
+  @JoinColumn({ name: 'area_id' })
+  area: Area;
+  // Thao tác trên Thiết bị nào? (Có thể NULL nếu thao tác đổi thực phẩm)
+  @ManyToOne(() => Device, { nullable: true })
   @JoinColumn({ name: 'device_id' })
   device: Device;
 }

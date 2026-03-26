@@ -2,40 +2,30 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
-import { StorageArea } from './storage-area.entity';
-import { ActionLog } from './action-log.entity';
+import { Area } from './area.entity';
 
 @Entity('USERS')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50, unique: true })
+  @Column()
   username: string;
 
+  // 🌟 THÊM DÒNG NÀY VÔ NÈ ÔNG
   @Column()
-  password_hash: string;
+  password: string;
 
-  @Column({ length: 100 })
-  email: string;
+  @Column({ default: 'OPERATOR' })
+  role: string;
 
-  @Column({ length: 20, default: 'STAFF' })
-  role: string; // ADMIN hoặc STAFF
+  @Column({ nullable: true })
+  full_name: string;
 
-  @Column({ default: 'ACTIVE' })
-  status: string;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  // Quan hệ: 1 User quản lý Nhiều Kho (StorageArea)
-  @OneToMany(() => StorageArea, (area) => area.operator)
-  areas: StorageArea[];
-
-  // Quan hệ: 1 User có Nhiều Lịch sử thao tác (ActionLog)
-  @OneToMany(() => ActionLog, (log) => log.user)
-  action_logs: ActionLog[];
+  @ManyToMany(() => Area, (area) => area.operators)
+  @JoinTable({ name: 'user_area_management' })
+  managed_areas: Area[];
 }
