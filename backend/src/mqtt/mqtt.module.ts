@@ -1,25 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MqttService } from './mqtt.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { Device } from '../entities/device.entity';
-import { SensorReading } from '../entities/sensor-reading.entity';
-import { ActionLog } from '../entities/action-log.entity';
-import { FoodType } from '../entities/food-type.entity';
-import { Area } from '../entities/area.entity';
-import { AppGateway } from '../gateway/app.gateway';
+import { MqttService } from './mqtt.service'; // 🌟 Dòng này bị lỡ tay xóa mất nè!
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Device,
-      SensorReading,
-      ActionLog,
-      Area,
-      FoodType,
-    ]),
-  ],
-  providers: [MqttService, AppGateway],
-  exports: [MqttService], // Phải có dòng export này và class tên MqttModule nha!
+  imports: [],
+  controllers: [],
+  providers: [MqttService],
+  exports: [MqttService],
 })
-export class MqttModule {} // Chữ MqttModule này phải khớp y chang với bên app.module.ts
+export class MqttModule {}

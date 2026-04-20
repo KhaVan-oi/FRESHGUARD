@@ -38,8 +38,9 @@ export class Area {
   devices: Device[];
 
   // 4. Bị quản lý bởi ai? (Quan hệ Nhiều - Nhiều)
-  @ManyToMany(() => User, (user) => user.managed_areas)
-  operators: User[];
+  @ManyToOne(() => User, (user) => user.areas)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({ type: 'varchar', length: 20, default: 'AUTO' })
   operating_mode: string;

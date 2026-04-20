@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Area } from './area.entity';
 
 @Entity('USERS')
@@ -15,7 +9,6 @@ export class User {
   @Column()
   username: string;
 
-  // 🌟 THÊM DÒNG NÀY VÔ NÈ ÔNG
   @Column()
   password: string;
 
@@ -25,7 +18,6 @@ export class User {
   @Column({ nullable: true })
   full_name: string;
 
-  @ManyToMany(() => Area, (area) => area.operators)
-  @JoinTable({ name: 'user_area_management' })
-  managed_areas: Area[];
+  @OneToMany(() => Area, (area) => area.user)
+  areas: Area[];
 }

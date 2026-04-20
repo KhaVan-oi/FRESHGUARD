@@ -1,28 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppGateway } from './gateway/app.gateway'; //Gateway cho Realtimes
 
-// Đăng ký 7 thực thể (DB)
-import { Warehouse } from './entities/warehouse.entity';
-import { Area } from './entities/area.entity';
-import { User } from './entities/user.entity';
-import { FoodType } from './entities/food-type.entity';
-import { Device } from './entities/device.entity';
-import { SensorReading } from './entities/sensor-reading.entity';
-import { ActionLog } from './entities/action-log.entity';
-
-// Import cái Module MQTT
-import { MqttModule } from './mqtt/mqtt.module';
+// Import 5 cái Module con
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { FacilitiesModule } from './facilities/facilities.module';
+import { IotModule } from './iot/iot.module';
+import { TelemetryModule } from './telemetry/telemetry.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    ScheduleModule.forRoot(), // Kích hoạt crosscron
-
+    // 1. Cấu hình Database
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -30,24 +19,22 @@ import { MqttModule } from './mqtt/mqtt.module';
       username: 'root',
       password: '',
       database: 'freshguard',
+      // Tự động quét hết tất cả Entity trong các folder
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false, // Tự động tạo bảng DB
+      synchronize: false, // Tự tạo bảng mới nếu chưa có
     }),
 
-    // KHAI BÁO 7 BẢNG
-    TypeOrmModule.forFeature([
-      Warehouse,
-      Area,
-      User,
-      FoodType,
-      Device,
-      SensorReading,
-      ActionLog,
-    ]),
+    // 2. Kích hoạt tính năng Hẹn giờ tự động
+    ScheduleModule.forRoot(),
 
-    MqttModule,
+    // 3. Nạp 5 Module chức năng vào hệ thống
+    AuthModule,
+    UsersModule,
+    FacilitiesModule,
+    IotModule,
+    TelemetryModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
