@@ -21,16 +21,22 @@ import {
 } from "../components/ui/breadcrumb";
 import { useNavigate } from "react-router";
 import { useFoodType } from "../hooks/useFoodtype";
+import {
+  createFoodType,
+  updateFoodType,
+  deleteFoodType,
+} from "../api/foodTypeApi";
 import type { FoodType } from "../types";
 
 interface FoodItem extends FoodType {}
 
 export function FoodsPage() {
   const navigate = useNavigate();
-  const { foodTypes, loading, error } = useFoodType();
+  const { foodTypes, loading, error, refetch } = useFoodType();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingFood, setEditingFood] = useState<FoodItem | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -64,18 +70,38 @@ export function FoodsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: string): void => {
+  const handleDelete = async (id: string): Promise<void> => {
     if (window.confirm("Bạn có chắc chắn muốn xóa loại thực phẩm này?")) {
-      // TODO: Call API to delete food type
-      console.log("Delete food type:", id);
+      try {
+        await deleteFoodType(Number(id));
+        await refetch();
+      } catch (err) {
+        alert(
+          "Lỗi khi xóa thực phẩm: " +
+            (err instanceof Error ? err.message : "Unknown error"),
+        );
+      }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent): void => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    // TODO: Call API to add/update food type
-    console.log("Submit food:", formData);
-    setIsModalOpen(false);
+    setIsSubmitting(true);
+    try {
+      if (editingFood) {
+        // Update existing food
+        await updateFoodType(Number(editingFood.id), formData);
+      } else {
+        // Create new food
+        await createFoodType(formData);
+      }
+      await refetch();
+      setIsModalOpen(false);
+    } catch (err) {
+      alert("Lỗi: " + (err instanceof Error ? err.message : "Unknown error"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -323,15 +349,21 @@ export function FoodsPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors"
+                  disabled={isSubmitting}
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-colors disabled:opacity-50"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-2.5 bg-[#2ECC71] text-white rounded-lg font-bold hover:bg-[#27AE60] shadow-lg shadow-green-100 transition-all active:scale-95"
+                  disabled={isSubmitting}
+                  className="px-8 py-2.5 bg-[#2ECC71] text-white rounded-lg font-bold hover:bg-[#27AE60] shadow-lg shadow-green-100 transition-all active:scale-95 disabled:opacity-50"
                 >
-                  {editingFood ? "Lưu thay đổi" : "Xác nhận thêm"}
+                  {isSubmitting
+                    ? "Đang xử lý..."
+                    : editingFood
+                      ? "Lưu thay đổi"
+                      : "Xác nhận thêm"}
                 </button>
               </div>
             </form>
