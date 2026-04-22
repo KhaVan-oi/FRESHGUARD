@@ -10,19 +10,27 @@ import type {
 
 // ================= DASHBOARD =================
 export function getDashboard() {
-  return axiosClient
-    .get<DashboardApiResponse>("/dashboard");
+  return axiosClient.get<DashboardApiResponse>("/dashboard");
 }
 
 // ================= WAREHOUSE =================
 export function getWarehouses() {
-  return axiosClient.get<{ status: string; data: WarehouseApi[] }>("/warehouses");
+  return axiosClient.get<{ status: string; data: WarehouseApi[] }>(
+    "/warehouses",
+  );
+}
+
+export function getWarehouse(warehouseId: number | string) {
+  return axiosClient.get<{ status: string; data: WarehouseApi }>(
+    `/warehouses/${warehouseId}`,
+  );
 }
 
 // ================= FOOD TYPES =================
 export function getFoodTypes() {
-  return axiosClient
-    .get<{ status: string; data: FoodTypeApi[] }>("/food-types");
+  return axiosClient.get<{ status: string; data: FoodTypeApi[] }>(
+    "/food-types",
+  );
 }
 
 // ================= SENSOR HISTORY =================

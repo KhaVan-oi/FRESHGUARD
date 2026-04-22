@@ -1,4 +1,4 @@
-export type UserRole = 'Admin' | 'Operator';
+export type UserRole = "Admin" | "Operator";
 
 export interface User {
   id: string;
@@ -27,7 +27,7 @@ export interface Warehouse {
   areaCount: number;
   deviceCount: number;
   activeAlerts: number;
-  status: 'normal' | 'warning' | 'alert';
+  status: "normal" | "warning" | "alert";
   averageTemp: number;
   averageHumidity: number;
 }
@@ -36,7 +36,7 @@ export interface Area {
   id: string;
   name: string;
   warehouseId: string;
-  type: 'vegetable' | 'meat';
+  type: "vegetable" | "meat";
   operatorId?: string;
   foodTypeIds: string[];
   currentTemp: number;
@@ -45,13 +45,18 @@ export interface Area {
   maxTemp: number;
   minHumidity: number;
   maxHumidity: number;
-  status: 'normal' | 'warning' | 'alert';
+  status: "normal" | "warning" | "alert";
   deviceCount: number;
 }
 
-export type DeviceType = 'temperature' | 'humidity' | 'cooling' | 'fan' | 'light';
-export type DeviceCategory = 'sensor' | 'control';
-export type ControlMode = 'manual' | 'automatic' | 'scheduled';
+export type DeviceType =
+  | "temperature"
+  | "humidity"
+  | "cooling"
+  | "fan"
+  | "light";
+export type DeviceCategory = "sensor" | "control";
+export type ControlMode = "manual" | "automatic" | "scheduled";
 
 export interface Device {
   id: string;
@@ -59,7 +64,7 @@ export interface Device {
   type: DeviceType;
   category: DeviceCategory;
   areaId: string;
-  status: 'online' | 'offline' | 'error';
+  status: "online" | "offline" | "error";
   isActive: boolean;
   controlMode: ControlMode;
   value?: number;
@@ -79,8 +84,8 @@ export interface Alert {
   id: string;
   areaId: string;
   areaName: string;
-  type: 'temperature' | 'humidity';
-  severity: 'warning' | 'critical';
+  type: "temperature" | "humidity";
+  severity: "warning" | "critical";
   message: string;
   value: number;
   threshold: number;
@@ -92,7 +97,7 @@ export interface Schedule {
   id: string;
   deviceId: string;
   deviceName: string;
-  action: 'on' | 'off';
+  action: "on" | "off";
   startTime: string;
   endTime: string;
   days: number[];
@@ -112,7 +117,17 @@ export interface DashboardDeviceApi {
   device_code: string;
   device_name: string;
   adafruit_feed_key: string;
-  device_type: "TEMP" | "HUMI" | "BRIGHT" | "CO2_SENSOR" | "EMERGENCY_BTN" | "DOOR_SENSOR" | "ACTUATOR" | "COOLING" | "FAN" | "LIGHT";
+  device_type:
+    | "TEMP"
+    | "HUMI"
+    | "BRIGHT"
+    | "CO2_SENSOR"
+    | "EMERGENCY_BTN"
+    | "DOOR_SENSOR"
+    | "ACTUATOR"
+    | "COOLING"
+    | "FAN"
+    | "LIGHT";
   status: string; // e.g., "ONLINE", "OFF", "RED_BLINK"
 }
 
@@ -168,6 +183,8 @@ export interface FoodTypeApi {
   food_name: string;
   min_temp: number;
   max_temp: number;
+  min_humi: number;
+  max_humi: number;
 }
 
 export interface SensorHistoryRecord {

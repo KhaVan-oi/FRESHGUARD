@@ -1,10 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Warehouse, MapPin, Cpu, Bell } from "lucide-react";
 import {
-  Bar,
-  BarChart,
-  Cell,
-  Legend,
   Line,
   LineChart,
   PieChart,
@@ -13,6 +9,8 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Legend,
+  Cell,
 } from "recharts";
 
 import { useDashboard } from "../hooks/useDashboard";
@@ -22,6 +20,10 @@ import { store } from "../store";
 import { StatCard } from "../components/StatCard";
 import { AreaCard } from "../components/AreaCard";
 
+/* ================= TYPE ================= */
+
+type Range = "minute" | "hour" | "day";
+
 /* ================= COMPONENT ================= */
 
 export function DashboardPage() {
@@ -30,9 +32,7 @@ export function DashboardPage() {
   const alerts = store.getAlerts().filter((a) => !a.acknowledged);
 
   const [selectedWarehouseId, setSelectedWarehouseId] = useState("all");
-  const [selectedRange, setSelectedRange] = useState<"day" | "week" | "month">(
-    "day",
-  );
+  const [selectedRange, setSelectedRange] = useState<Range>("minute");
 
   /* ================= FILTER AREAS ================= */
 
@@ -41,7 +41,10 @@ export function DashboardPage() {
     return areas.filter((a) => a.warehouseId === selectedWarehouseId);
   }, [areas, selectedWarehouseId]);
 
-  const areaIds = useMemo(() => chartAreas.map((a) => a.id), [chartAreas]);
+  const areaIds = useMemo(
+    () => chartAreas.map((a) => a.id),
+    [chartAreas],
+  );
 
   const chartDevices = useMemo(
     () => devices.filter((d) => areaIds.includes(d.areaId)),
@@ -57,32 +60,34 @@ export function DashboardPage() {
     (d) => d.status === "online",
   ).length;
 
-  /* ================= SENSOR ================= */
+  /* ================= SENSOR DATA ================= */
 
   const { chartData } = useSensorHistory(areaIds, selectedRange);
 
-  /* ================= ALERT ================= */
+  /* ================= ALERT CHART (REFAC CLEAN) ================= */
 
   const alertData = useMemo(() => {
     const labels =
-      selectedRange === "day"
-        ? ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"]
-        : selectedRange === "week"
-          ? ["T2", "T3", "T4", "T5", "T6", "T7", "CN"]
-          : ["Tuần 1", "Tuần 2", "Tuần 3", "Tuần 4"];
+      selectedRange === "minute"
+        ? []
+        : selectedRange === "hour"
+          ? Array.from({ length: 24 }, (_, i) =>
+              i.toString().padStart(2, "0") + ":00",
+            )
+          : Array.from({ length: 7 }, (_, i) => `T${i + 2}`);
 
     const getBucket = (date: Date) => {
+      if (selectedRange === "hour") return date.getHours();
       if (selectedRange === "day")
-        return Math.min(5, Math.floor(date.getHours() / 4));
-      if (selectedRange === "week") return (date.getDay() + 6) % 7;
-      return Math.min(3, Math.floor((date.getDate() - 1) / 7));
+        return (date.getDay() + 6) % 7;
+      return 0; // minute → optional alert grouping (hoặc bỏ chart này nếu muốn)
     };
 
     const count = Array(labels.length).fill(0);
 
     chartAlerts.forEach((a) => {
       const idx = getBucket(new Date(a.timestamp));
-      count[idx]++;
+      if (idx >= 0 && idx < count.length) count[idx]++;
     });
 
     return labels.map((label, i) => ({
@@ -91,7 +96,7 @@ export function DashboardPage() {
     }));
   }, [chartAlerts, selectedRange]);
 
-  /* ================= DEVICE ================= */
+  /* ================= DEVICE CHART ================= */
 
   const deviceTypeNames: Record<string, string> = {
     temperature: "Cảm biến nhiệt độ",
@@ -110,7 +115,7 @@ export function DashboardPage() {
   };
 
   const deviceData = useMemo(() => {
-    const types = ["temperature", "humidity", "cooling", "fan", "light"];
+    const types = Object.keys(deviceTypeNames);
 
     return types.map((t) => ({
       name: deviceTypeNames[t],
@@ -118,46 +123,6 @@ export function DashboardPage() {
       fill: deviceColors[t],
     }));
   }, [chartDevices]);
-
-  /* ================= ENERGY ================= */
-
-  const energyData = useMemo(() => {
-    const labels =
-      selectedRange === "day"
-        ? ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"]
-        : selectedRange === "week"
-          ? ["T2", "T3", "T4", "T5", "T6", "T7", "CN"]
-          : ["Tuần 1", "Tuần 2", "Tuần 3", "Tuần 4"];
-
-    const weights: Record<string, number> = {
-      temperature: 0.05,
-      humidity: 0.05,
-      cooling: 1.8,
-      fan: 0.9,
-      light: 0.4,
-    };
-
-    const online = chartDevices.filter((d) => d.status === "online");
-
-    const base = Object.keys(weights).reduce((sum, type) => {
-      const c = online.filter((d) => d.type === type).length;
-      return sum + c * weights[type];
-    }, 0);
-
-    const baseKwh = base * 0.25;
-
-    const factors =
-      selectedRange === "day"
-        ? [0.85, 1.05, 0.95, 1.15, 1, 0.9]
-        : selectedRange === "week"
-          ? [0.92, 1.03, 1.01, 0.98, 1.06, 1.1, 0.97]
-          : [0.95, 1.02, 1.08, 0.99];
-
-    return labels.map((t, i) => ({
-      time: t,
-      energy: Number((baseKwh * (factors[i] ?? 1)).toFixed(2)),
-    }));
-  }, [chartDevices, selectedRange]);
 
   /* ================= LOADING ================= */
 
@@ -168,10 +133,12 @@ export function DashboardPage() {
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-bold">Tổng quan hệ thống</h1>
-        <p className="text-gray-500">Giám sát kho lạnh & thiết bị realtime</p>
+        <p className="text-gray-500">
+          Giám sát kho lạnh & thiết bị realtime
+        </p>
       </div>
 
-      {/* STATS (GIỮ NGUYÊN 100% NHƯ BẠN YÊU CẦU) */}
+      {/* STATS */}
       <div className="grid grid-cols-4 gap-6">
         <StatCard
           icon={Warehouse}
@@ -208,7 +175,9 @@ export function DashboardPage() {
         <div className="flex gap-4">
           <select
             value={selectedWarehouseId}
-            onChange={(e) => setSelectedWarehouseId(e.target.value)}
+            onChange={(e) =>
+              setSelectedWarehouseId(e.target.value)
+            }
             className="px-4 py-2 border rounded-lg"
           >
             <option value="all">Tất cả kho</option>
@@ -219,12 +188,14 @@ export function DashboardPage() {
             ))}
           </select>
 
-          {(["day", "week", "month"] as const).map((r) => (
+          {(["minute", "hour", "day"] as Range[]).map((r) => (
             <button
               key={r}
               onClick={() => setSelectedRange(r)}
               className={`px-4 py-2 rounded-lg ${
-                selectedRange === r ? "bg-green-500 text-white" : "bg-gray-200"
+                selectedRange === r
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200"
               }`}
             >
               {r}
@@ -238,13 +209,18 @@ export function DashboardPage() {
         <h2 className="text-lg font-semibold mb-4">Khu vực</h2>
         <div className="grid grid-cols-2 gap-6">
           {chartAreas.map((a) => (
-            <AreaCard key={a.id} area={a} warehouseId={a.warehouseId} />
+            <AreaCard
+              key={a.id}
+              area={a}
+              warehouseId={a.warehouseId}
+            />
           ))}
         </div>
       </div>
 
       {/* CHARTS */}
       <div className="grid grid-cols-2 gap-6">
+        {/* ALERT */}
         <div className="bg-white p-4 rounded-xl">
           <h3 className="font-semibold mb-4">Cảnh báo</h3>
           <ResponsiveContainer width="100%" height={250}>
@@ -253,13 +229,16 @@ export function DashboardPage() {
               <YAxis />
               <Tooltip />
               <Line dataKey="value" stroke="#f97316" />
+              <Legend />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
+        {/* DEVICE */}
         <div className="bg-white p-4 rounded-xl">
           <h3 className="font-semibold mb-4">Thiết bị</h3>
-          {deviceData.length === 0 || deviceData.every((d) => d.value === 0) ? (
+
+          {deviceData.every((d) => d.value === 0) ? (
             <div className="flex items-center justify-center h-[250px] text-gray-400">
               Chưa có dữ liệu thiết bị
             </div>
@@ -270,34 +249,27 @@ export function DashboardPage() {
                   data={deviceData}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={({ value }) => (value > 0 ? value : "")}
                   outerRadius={70}
-                  fill="#8884d8"
                   dataKey="value"
                   nameKey="name"
+                  label={({ value }) => (value > 0 ? value : "")}
                 >
                   {deviceData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                    <Cell key={index} fill={entry.fill} />
                   ))}
                 </Pie>
-                <Tooltip
-                  formatter={(value) => [`${value} thiết bị`, "Số lượng"]}
-                  labelFormatter={(label) => label}
-                  contentStyle={{
-                    backgroundColor: "rgba(255, 255, 255, 0.95)",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                  }}
-                />
-                <Legend verticalAlign="bottom" height={36} />
+                <Tooltip />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
           )}
         </div>
 
+        {/* SENSOR */}
         <div className="bg-white p-4 rounded-xl">
-          <h3 className="font-semibold mb-4">Nhiệt độ & độ ẩm</h3>
+          <h3 className="font-semibold mb-4">
+            Nhiệt độ & độ ẩm
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={chartData}>
               <XAxis dataKey="time" />
@@ -306,31 +278,33 @@ export function DashboardPage() {
               <Line
                 dataKey="temperature"
                 stroke="#f97316"
-                strokeWidth={2}
                 dot={false}
-                name="Nhiệt độ"
               />
               <Line
                 dataKey="humidity"
                 stroke="#06b6d4"
-                strokeWidth={2}
                 dot={false}
-                name="Độ ẩm"
               />
               <Legend />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
+        {/* CO2 */}
         <div className="bg-white p-4 rounded-xl">
-          <h3 className="font-semibold mb-4">Điện năng</h3>
+          <h3 className="font-semibold mb-4">CO2</h3>
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={energyData}>
+            <LineChart data={chartData}>
               <XAxis dataKey="time" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="energy" fill="#a855f7" />
-            </BarChart>
+              <Line
+                dataKey="co2"
+                stroke="#8b5cf6"
+                dot={false}
+              />
+              <Legend />
+            </LineChart>
           </ResponsiveContainer>
         </div>
       </div>

@@ -1,19 +1,20 @@
-import { createBrowserRouter, Navigate } from 'react-router';
-import { RootLayout } from './layouts/RootLayout';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { WarehousesPage } from './pages/WarehousesPage';
-import { FoodsPage } from './pages/FoodsPage';
-import { LogsPage } from './pages/LogsPage';
-import { WarehouseDetailPage } from './pages/WarehouseDetailPage';
-import { AreaDetailPage } from './pages/AreaDetailPage';
-import { DeviceDetailPage } from './pages/DeviceDetailPage';
-import { SchedulesPage } from './pages/SchedulesPage';
-import { AlertsPage } from './pages/AlertsPage';
-import { ReportsPage } from './pages/ReportsPage';
-import { UsersPage } from './pages/UsersPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { store } from './store';
+import { createBrowserRouter, Navigate } from "react-router";
+import { RootLayout } from "./layouts/RootLayout";
+import { LoginPage } from "./pages/LoginPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { WarehousesPage } from "./pages/WarehousesPage";
+import { FoodsPage } from "./pages/FoodsPage";
+import { LogsPage } from "./pages/LogsPage";
+import { AreasPage } from "./pages/AreasPage";
+import { WarehouseDetailPage } from "./pages/WarehouseDetailPage";
+import { AreaDetailPage } from "./pages/AreaDetailPage";
+import { DeviceDetailPage } from "./pages/DeviceDetailPage";
+import { SchedulesPage } from "./pages/SchedulesPage";
+import { AlertsPage } from "./pages/AlertsPage";
+import { ReportsPage } from "./pages/ReportsPage";
+import { UsersPage } from "./pages/UsersPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { store } from "./store";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const user = store.getCurrentUser();
@@ -28,7 +29,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  if (user.role !== 'Admin') {
+  if (user.role !== "Admin") {
     return <Navigate to="/dashboard" replace />;
   }
   return <>{children}</>;
@@ -36,11 +37,11 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 
 export const router = createBrowserRouter([
   {
-    path: '/login',
-    element: <LoginPage />
+    path: "/login",
+    element: <LoginPage />,
   },
   {
-    path: '/',
+    path: "/",
     element: (
       <ProtectedRoute>
         <RootLayout />
@@ -49,64 +50,68 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/dashboard" replace />
+        element: <Navigate to="/dashboard" replace />,
       },
       {
-        path: 'dashboard',
-        element: <DashboardPage />
+        path: "dashboard",
+        element: <DashboardPage />,
       },
       {
-        path: 'warehouses',
-        element: <WarehousesPage />
+        path: "warehouses",
+        element: <WarehousesPage />,
       },
       {
-        path: 'foods',
-        element: <FoodsPage />
+        path: "foods",
+        element: <FoodsPage />,
       },
       {
-        path: 'logs',
-        element: <LogsPage />
+        path: "logs",
+        element: <LogsPage />,
       },
       {
-        path: 'warehouses/:warehouseId',
-        element: <WarehouseDetailPage />
+        path: "areas/:warehouseId",
+        element: <AreasPage />,
       },
       {
-        path: 'warehouses/:warehouseId/areas/:areaId',
-        element: <AreaDetailPage />
+        path: "warehouses/:warehouseId",
+        element: <WarehouseDetailPage />,
       },
       {
-        path: 'warehouses/:warehouseId/areas/:areaId/devices/:deviceId',
-        element: <DeviceDetailPage />
+        path: "warehouses/:warehouseId/areas/:areaId",
+        element: <AreaDetailPage />,
       },
       {
-        path: 'schedules',
-        element: <SchedulesPage />
+        path: "warehouses/:warehouseId/areas/:areaId/devices/:deviceId",
+        element: <DeviceDetailPage />,
       },
       {
-        path: 'alerts',
-        element: <AlertsPage />
+        path: "schedules",
+        element: <SchedulesPage />,
       },
       {
-        path: 'reports',
-        element: <ReportsPage />
+        path: "alerts",
+        element: <AlertsPage />,
       },
       {
-        path: 'users',
+        path: "reports",
+        element: <ReportsPage />,
+      },
+      {
+        path: "users",
         element: (
           <AdminRoute>
             <UsersPage />
           </AdminRoute>
-        )
+        ),
       },
       {
-        path: 'profile',
-        element: <ProfilePage />
-      }
-    ]
+        path: "profile",
+        element: <ProfilePage />,
+      },
+    ],
   },
   {
-    path: '*',
-    element: <Navigate to="/login" replace />
-  }
+    path: "*",
+    element: <Navigate to="/login" replace />,
+  },
 ]);
