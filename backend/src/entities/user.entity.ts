@@ -18,6 +18,9 @@ export class User {
   @Column({ nullable: true })
   full_name: string;
 
+  @Column({ nullable: true })
+  email: string;
+
   @OneToMany(() => Area, (area) => area.user)
   areas: Area[];
 }

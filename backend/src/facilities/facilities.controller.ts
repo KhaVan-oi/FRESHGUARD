@@ -24,6 +24,13 @@ export class FacilitiesController {
       data: await this.facilitiesService.createWarehouse(body),
     };
   }
+  @Get('facilities/warehouses')
+  async getAllWarehouses() {
+    return {
+      status: 'success',
+      data: await this.facilitiesService.getAllWarehouses(),
+    };
+  }
   @Get('warehouses/dashboard')
   async getDashboard() {
     return {

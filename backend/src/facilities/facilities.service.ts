@@ -21,15 +21,34 @@ export class FacilitiesService {
   async createWarehouse(data: Partial<Warehouse>) {
     return await this.warehouseRepo.save(this.warehouseRepo.create(data));
   }
-  // Hàm lấy Dashboard sếp giữ nguyên như cũ nha (tui rút gọn ở đây cho đỡ dài)
+
+  async getAllWarehouses() {
+    return await this.warehouseRepo.find();
+  }
+  // Hàm lấy Dashboard sếp giữ nguyên như cũ nha
   async getDashboardData() {
-    /* ... SQL Dashboard như cũ ... */ return [];
+    // Thằng TypeORM sẽ tự động join các bảng lại với nhau dựa trên Entity mình đã khai báo
+    return await this.warehouseRepo.find({
+      relations: {
+        areas: {
+          current_food_type: true, // Lấy thông tin thực phẩm (để biết ngưỡng nhiệt độ)
+          devices: true, // Lấy danh sách thiết bị trong khu vực đó
+          user: true, // Lấy thêm tên nhân viên quản lý (nếu có)
+        },
+      },
+    });
   }
 
   // ================= QUẢN LÝ KHU VỰC =================
   async getAllAreas() {
     return await this.areaRepo.find({
       relations: ['warehouse', 'user', 'current_food_type'],
+    });
+  }
+
+  async getAreaList() {
+    return await this.areaRepo.find({
+      select: ['id', 'area_name'],
     });
   }
 

@@ -28,4 +28,11 @@ export class UsersService {
     await this.userRepo.delete(id);
     return true;
   }
+
+  async getOperatorList() {
+    return await this.userRepo.find({
+      where: { role: 'OPERATOR' }, // Chỉ lấy nhân viên, không lấy Admin
+      select: ['id', 'username', 'full_name'], // Trả data mỏng cho FE nhẹ máy
+    });
+  }
 }

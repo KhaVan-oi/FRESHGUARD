@@ -57,4 +57,12 @@ export class UsersController {
       message: 'Cập nhật thông tin cá nhân thành công!',
     };
   }
+
+  @Get()
+  async getOperators() {
+    return {
+      status: 'success',
+      data: await this.usersService.getOperatorList(),
+    };
+  }
 }
