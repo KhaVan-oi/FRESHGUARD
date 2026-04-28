@@ -31,4 +31,10 @@ export class Device {
   @ManyToOne(() => Area, (area) => area.devices)
   @JoinColumn({ name: 'area_id' })
   area: Area;
+
+  @Column({ nullable: true })
+  schedule_on_time: string; // Định dạng "HH:mm" (VD: "18:00")
+
+  @Column({ nullable: true })
+  schedule_off_time: string; // VD: "06:00"
 }

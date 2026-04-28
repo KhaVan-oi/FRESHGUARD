@@ -6,6 +6,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinColumn,
+  JoinTable,
 } from 'typeorm';
 import { Warehouse } from './warehouse.entity';
 import { Device } from './device.entity';
@@ -29,18 +30,26 @@ export class Area {
   warehouse: Warehouse;
 
   // 2. Chứa Thực phẩm gì?
-  @ManyToOne(() => FoodType, { nullable: true })
-  @JoinColumn({ name: 'current_food_type_id' })
-  current_food_type: FoodType;
+  @ManyToMany(() => FoodType)
+  @JoinTable({
+    name: 'area_food_types', // Tên bảng trung gian mình tạo dưới SQL
+    joinColumn: { name: 'area_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'food_type_id', referencedColumnName: 'id' },
+  })
+  food_types: FoodType[];
 
   // 3. Có những Thiết bị nào?
   @OneToMany(() => Device, (device) => device.area)
   devices: Device[];
 
   // 4. Bị quản lý bởi ai? (Quan hệ Nhiều - Nhiều)
-  @ManyToOne(() => User, (user) => user.areas)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @ManyToMany(() => User, (user) => user.areas)
+  @JoinTable({
+    name: 'user_area_management', // Tên bảng trung gian
+    joinColumn: { name: 'area_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  operators: User[];
 
   @Column({ type: 'varchar', length: 20, default: 'AUTO' })
   operating_mode: string;

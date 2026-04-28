@@ -1,4 +1,10 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Warehouse } from '../entities/warehouse.entity';
@@ -31,9 +37,9 @@ export class FacilitiesService {
     return await this.warehouseRepo.find({
       relations: {
         areas: {
-          current_food_type: true, // Lấy thông tin thực phẩm (để biết ngưỡng nhiệt độ)
+          food_types: true, // Lấy thông tin thực phẩm (ngưỡng nhiệt độ)
           devices: true, // Lấy danh sách thiết bị trong khu vực đó
-          user: true, // Lấy thêm tên nhân viên quản lý (nếu có)
+          operators: true, // Lấy thêm tên nhân viên quản lý (nếu có)
         },
       },
     });
@@ -42,7 +48,7 @@ export class FacilitiesService {
   // ================= QUẢN LÝ KHU VỰC =================
   async getAllAreas() {
     return await this.areaRepo.find({
-      relations: ['warehouse', 'user', 'current_food_type'],
+      relations: ['warehouse', 'operators', 'food_types'],
     });
   }
 
@@ -62,12 +68,19 @@ export class FacilitiesService {
   }
 
   async assignOperator(areaId: number, userId: number) {
-    const area = await this.areaRepo.findOne({ where: { id: areaId } });
+    const area = await this.areaRepo.findOne({
+      where: { id: areaId },
+      relations: ['operators'],
+    });
     const user = await this.userRepo.findOne({ where: { id: userId } });
+
     if (!area || !user)
       throw new HttpException('Lỗi dữ liệu', HttpStatus.BAD_REQUEST);
 
-    area.user = user;
+    const currentOperators = area.operators || [];
+    currentOperators.push(user);
+    area.operators = currentOperators;
+
     await this.areaRepo.save(area);
     return { user: user.username, area: area.area_name };
   }
@@ -103,14 +116,6 @@ export class FacilitiesService {
         );
       }
     }
-
-    if (data.current_food_type_id !== undefined) {
-      const food = await this.foodTypeRepo.findOne({
-        where: { id: data.current_food_type_id },
-      });
-      if (food) area.current_food_type = food;
-    }
-
     return await this.areaRepo.save(area);
   }
 
@@ -131,5 +136,70 @@ export class FacilitiesService {
   async deleteFoodType(id: number) {
     await this.foodTypeRepo.delete(id);
     return true;
+  }
+
+  // ================= THÊM THỰC PHẨM VÀO KHO =================
+  async addFoodToArea(areaId: number, foodTypeId: number) {
+    // 1. Lấy Khu vực
+    const area = await this.areaRepo.findOne({
+      where: { id: areaId },
+      relations: ['food_types'],
+    });
+
+    if (!area) throw new NotFoundException('Không tìm thấy khu vực này');
+
+    // Khởi tạo mảng rỗng nếu chưa có gì (chống lỗi TypeORM)
+    const currentFoods = area.food_types || [];
+
+    // 2. Lấy thực phẩm mới định thêm vào
+    const newFood = await this.foodTypeRepo.findOne({
+      where: { id: foodTypeId },
+    });
+    if (!newFood)
+      throw new NotFoundException('Không tìm thấy loại thực phẩm này');
+
+    // 3. Nếu khu vực đã có thực phẩm, tiến hành check "Vùng giao thoa"
+    if (currentFoods.length > 0) {
+      const allFoods = [...currentFoods, newFood];
+
+      // Tìm dải nhiệt độ và độ ẩm giao thoa (Strict Intersection)
+      const bounds = allFoods.reduce(
+        (acc, f) => ({
+          minT: Math.max(acc.minT, f.min_temp),
+          maxT: Math.min(acc.maxT, f.max_temp),
+          minH: Math.max(acc.minH, f.min_humi),
+          maxH: Math.min(acc.maxH, f.max_humi),
+        }),
+        { minT: -99, maxT: 99, minH: 0, maxH: 100 },
+      );
+
+      // Nếu dải Min vượt quá dải Max -> Không có tiếng nói chung
+      if (bounds.minT > bounds.maxT || bounds.minH > bounds.maxH) {
+        throw new BadRequestException(
+          'Xung đột thông số! Thực phẩm này không thể để chung với các loại hiện có do lệch dải nhiệt độ/độ ẩm.',
+        );
+      }
+    }
+
+    // 4. Lưu liên kết mới vào bảng trung gian
+    currentFoods.push(newFood);
+    area.food_types = currentFoods;
+    await this.areaRepo.save(area);
+
+    return {
+      status: 'success',
+      message: 'Đã thêm thực phẩm vào khu vực thành công.',
+    };
+  }
+
+  async resolveAlert(logId: number) {
+    const log = await this.actionLogRepo.findOne({ where: { id: logId } });
+    if (!log) throw new NotFoundException('Không tìm thấy log cảnh báo');
+
+    log.is_resolved = true;
+    await this.actionLogRepo.save(log);
+
+    // Ghi nhận thêm 1 log là nhân viên đã dọn dẹp xong
+    return { status: 'success', message: 'Đã xác nhận xử lý cảnh báo!' };
   }
 }

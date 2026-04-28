@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from '@nestjs/config';
 
 // Import 5 cái Module con
 import { AuthModule } from './auth/auth.module';
@@ -11,6 +12,7 @@ import { TelemetryModule } from './telemetry/telemetry.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     // 1. Cấu hình Database
     TypeOrmModule.forRoot({
       type: 'mysql',

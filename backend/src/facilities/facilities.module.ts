@@ -5,7 +5,6 @@ import { FacilitiesService } from './facilities.service';
 import { Warehouse } from '../entities/warehouse.entity';
 import { Area } from '../entities/area.entity';
 import { FoodType } from '../entities/food-type.entity';
-// 🌟 Import thêm 2 bảng này để làm assign-operator và ghi log
 import { User } from '../entities/user.entity';
 import { ActionLog } from '../entities/action-log.entity';
 

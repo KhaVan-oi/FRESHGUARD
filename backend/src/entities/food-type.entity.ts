@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import { Area } from './area.entity';
 
 @Entity('FOOD_TYPES')
 export class FoodType {
@@ -20,4 +21,7 @@ export class FoodType {
 
   @Column('float')
   max_humi: number;
+
+  @ManyToMany(() => Area, (area) => area.food_types)
+  areas: Area[];
 }

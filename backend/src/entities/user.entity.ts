@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { Area } from './area.entity';
 
 @Entity('USERS')
@@ -21,6 +21,6 @@ export class User {
   @Column({ nullable: true })
   email: string;
 
-  @OneToMany(() => Area, (area) => area.user)
+  @ManyToMany(() => Area, (area) => area.operators)
   areas: Area[];
 }
