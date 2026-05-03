@@ -45,5 +45,11 @@ export class ActionLog {
   is_resolved: boolean; // Trạng thái đã xử lý chưa?
 
   @Column({ default: false })
-  is_escalated: boolean; // Trạng thái đã leo thang chưa? (Để khỏi bị gửi thông báo spam liên tục)
+  is_escalated: boolean; // Trạng thái đã cảnh báo chưa? (Để khỏi bị gửi thông báo spam liên tục)
+
+  @Column({ type: 'timestamp', nullable: true })
+  resolved_at: Date; // Thời gian bấm xác nhận
+
+  @Column({ type: 'text', nullable: true })
+  resolve_note: string; // Lý do xử lý (VD: "Đã đóng cửa kho")
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2026 at 06:24 PM
+-- Generation Time: May 03, 2026 at 04:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,341 +35,19 @@ CREATE TABLE `action_logs` (
   `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `user_id` int(11) DEFAULT NULL,
   `area_id` int(11) DEFAULT NULL,
-  `device_id` int(11) DEFAULT NULL
+  `device_id` int(11) DEFAULT NULL,
+  `is_resolved` tinyint(1) NOT NULL DEFAULT 0,
+  `is_escalated` tinyint(1) NOT NULL DEFAULT 0,
+  `resolved_at` datetime DEFAULT NULL,
+  `resolve_note` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `action_logs`
 --
 
-INSERT INTO `action_logs` (`id`, `action_type`, `action_value`, `trigger_source`, `created_at`, `user_id`, `area_id`, `device_id`) VALUES
-(1, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 28)', 'AUTO', '2026-03-25 17:12:50.445603', NULL, 1, 1),
-(2, 'MANUAL_CONTROL', 'Người dùng ép lệnh undefined từ Web', 'MANUAL', '2026-03-25 21:41:24.483752', NULL, NULL, 1),
-(3, 'MANUAL_CONTROL', 'Người dùng ép lệnh MODE_1 từ Web', 'MANUAL', '2026-03-25 21:42:02.535118', NULL, NULL, 4),
-(4, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:23:26.734314', NULL, NULL, 1),
-(5, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 22:26:11.711170', NULL, NULL, 1),
-(6, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 22:43:50.482010', NULL, NULL, 6),
-(7, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:43:53.948026', NULL, NULL, 6),
-(8, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 22:43:56.800668', NULL, NULL, 6),
-(9, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:44:00.504310', NULL, NULL, 6),
-(10, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 25)', 'AUTO', '2026-03-25 22:47:17.447590', NULL, 1, 1),
-(11, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:54:19.435378', NULL, NULL, 3),
-(12, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 22:54:22.950716', NULL, NULL, 3),
-(13, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:54:25.578072', NULL, NULL, 3),
-(14, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 22:57:19.783267', NULL, NULL, 4),
-(15, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:57:33.484450', NULL, NULL, 4),
-(16, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 22:57:35.001716', NULL, NULL, 5),
-(17, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 22:57:52.524288', NULL, NULL, 5),
-(18, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 23:03:52.476593', NULL, NULL, 3),
-(19, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 23:03:54.963517', NULL, NULL, 3),
-(20, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 23:03:56.976285', NULL, NULL, 4),
-(21, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 23:03:58.563774', NULL, NULL, 4),
-(22, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-25 23:04:02.904712', NULL, NULL, 5),
-(23, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-25 23:04:04.445976', NULL, NULL, 5),
-(24, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-25 23:06:35.995900', NULL, NULL, 4),
-(25, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-25 23:06:44.626950', NULL, NULL, 4),
-(26, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-25 23:06:50.245563', NULL, NULL, 4),
-(27, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-25 23:24:07.024121', NULL, NULL, 4),
-(28, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:15:19.436224', NULL, NULL, 4),
-(29, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:15:21.987944', NULL, NULL, 4),
-(30, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:15:23.604620', NULL, NULL, 4),
-(31, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:15:26.594817', NULL, NULL, 4),
-(32, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 13:15:28.862758', NULL, NULL, 4),
-(33, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 13:15:31.497366', NULL, NULL, 4),
-(34, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:15:33.593103', NULL, NULL, 4),
-(35, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:15:34.512425', NULL, NULL, 4),
-(36, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:15:34.728328', NULL, NULL, 4),
-(37, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 13:15:36.459024', NULL, NULL, 4),
-(38, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 13:15:36.632736', NULL, NULL, 4),
-(39, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 13:15:36.852995', NULL, NULL, 4),
-(40, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:15:39.811101', NULL, NULL, 4),
-(41, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:23:50.454407', NULL, NULL, 4),
-(42, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:23:51.213824', NULL, NULL, 3),
-(43, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:23:53.068077', NULL, NULL, 3),
-(44, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:23:54.027594', NULL, NULL, 3),
-(45, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:26:58.101243', NULL, NULL, 4),
-(46, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:27:16.514525', NULL, NULL, 3),
-(47, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:27:18.609462', NULL, NULL, 3),
-(48, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:27:32.610767', NULL, NULL, 3),
-(49, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 25)', 'AUTO', '2026-03-26 13:28:20.020909', NULL, 1, 1),
-(50, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:29:19.141844', NULL, NULL, 4),
-(51, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:29:22.454153', NULL, NULL, 4),
-(52, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 13:29:23.207195', NULL, NULL, 4),
-(53, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 13:29:23.697848', NULL, NULL, 4),
-(54, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 13:29:24.257268', NULL, NULL, 4),
-(55, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 13:29:24.450410', NULL, NULL, 4),
-(56, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 13:29:24.720950', NULL, NULL, 4),
-(57, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:29:25.044968', NULL, NULL, 4),
-(58, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 13:29:25.368392', NULL, NULL, 4),
-(59, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:29:26.664852', NULL, NULL, 4),
-(60, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:31:49.464472', NULL, NULL, 3),
-(61, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:35:32.394263', NULL, NULL, 3),
-(62, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:35:35.116246', NULL, NULL, 3),
-(63, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:38:06.448220', NULL, NULL, 3),
-(64, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:38:08.799174', NULL, NULL, 3),
-(65, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 13:48:13.937498', NULL, NULL, 3),
-(66, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:48:15.827752', NULL, NULL, 3),
-(67, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 13:52:23.136705', NULL, NULL, 4),
-(68, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 13:52:31.279675', NULL, NULL, 4),
-(69, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 12)', 'AUTO', '2026-03-26 13:55:36.431950', NULL, 1, 1),
-(70, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 31.9)', 'AUTO', '2026-03-26 14:18:10.892382', NULL, 1, 1),
-(71, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 31.9)', 'AUTO', '2026-03-26 14:18:21.537997', NULL, 1, 1),
-(72, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:18:31.972319', NULL, 1, 1),
-(73, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:18:42.671842', NULL, 1, 1),
-(74, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 31.9)', 'AUTO', '2026-03-26 14:18:52.968282', NULL, 1, 1),
-(75, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:18:54.101921', NULL, NULL, 3),
-(76, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:18:54.917663', NULL, NULL, 3),
-(77, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:19:03.616609', NULL, 1, 1),
-(78, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:19:13.945486', NULL, 1, 1),
-(79, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:19:24.516265', NULL, 1, 1),
-(80, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:19:35.048117', NULL, 1, 1),
-(81, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:19:39.961226', NULL, NULL, 4),
-(82, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 14:19:41.562211', NULL, NULL, 4),
-(83, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:19:45.584668', NULL, 1, 1),
-(84, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:19:56.152381', NULL, 1, 1),
-(85, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32)', 'AUTO', '2026-03-26 14:20:06.676803', NULL, 1, 1),
-(86, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:46:34.482033', NULL, 1, 1),
-(87, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:46:44.918529', NULL, 1, 1),
-(88, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:46:55.568922', NULL, 1, 1),
-(89, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:47:05.911384', NULL, 1, 1),
-(90, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:47:10.789168', NULL, NULL, 3),
-(91, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:47:13.782739', NULL, NULL, 3),
-(92, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:47:16.572082', NULL, 1, 1),
-(93, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:47:16.756047', NULL, NULL, 3),
-(94, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:47:22.721750', NULL, NULL, 3),
-(95, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:47:24.415316', NULL, NULL, 3),
-(96, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:47:26.934668', NULL, 1, 1),
-(97, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:47:27.110544', NULL, NULL, 4),
-(98, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:47:28.473962', NULL, NULL, 4),
-(99, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:47:30.491168', NULL, NULL, 4),
-(100, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:47:31.322038', NULL, NULL, 4),
-(101, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:47:35.081256', NULL, NULL, 4),
-(102, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:47:37.189060', NULL, NULL, 4),
-(103, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:47:37.978540', NULL, NULL, 4),
-(104, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:47:43.984591', NULL, NULL, 4),
-(105, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:47:55.903064', NULL, NULL, 4),
-(106, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:47:57.146773', NULL, NULL, 4),
-(107, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:48:09.099120', NULL, 1, 1),
-(108, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:48:13.953736', NULL, NULL, 3),
-(109, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:48:14.903770', NULL, NULL, 3),
-(110, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:48:19.634198', NULL, 1, 1),
-(111, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:48:30.138978', NULL, 1, 1),
-(112, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:48:40.556627', NULL, 1, 1),
-(113, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:48:44.424854', NULL, NULL, 3),
-(114, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:48:44.850553', NULL, NULL, 3),
-(115, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:48:46.723234', NULL, NULL, 3),
-(116, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:48:47.070326', NULL, NULL, 3),
-(117, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:48:48.248458', NULL, NULL, 3),
-(118, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:48:48.536059', NULL, NULL, 3),
-(119, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:49:30.599408', NULL, NULL, 3),
-(120, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:49:33.144048', NULL, 1, 1),
-(121, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:49:43.687288', NULL, 1, 1),
-(122, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:49:54.247745', NULL, 1, 1),
-(123, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:50:04.791110', NULL, 1, 1),
-(124, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:50:15.229826', NULL, 1, 1),
-(125, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:50:25.791701', NULL, 1, 1),
-(126, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.5)', 'AUTO', '2026-03-26 14:50:36.325989', NULL, 1, 1),
-(127, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:50:46.885357', NULL, 1, 1),
-(128, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:50:57.184810', NULL, 1, 1),
-(129, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:51:07.862810', NULL, 1, 1),
-(130, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:51:18.223169', NULL, 1, 1),
-(131, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:51:28.921383', NULL, 1, 1),
-(132, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:51:39.270465', NULL, 1, 1),
-(133, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:51:49.890057', NULL, 1, 1),
-(134, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:52:00.411967', NULL, 1, 1),
-(135, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:52:10.859841', NULL, 1, 1),
-(136, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:52:21.601237', NULL, 1, 1),
-(137, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:52:32.036243', NULL, 1, 1),
-(138, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:52:42.382719', NULL, 1, 1),
-(139, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:52:52.921001', NULL, 1, 1),
-(140, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:53:03.651531', NULL, 1, 1),
-(141, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:53:13.938281', NULL, 1, 1),
-(142, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:53:24.492912', NULL, 1, 1),
-(143, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:53:34.959198', NULL, 1, 1),
-(144, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:53:38.883792', NULL, NULL, 3),
-(145, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:53:42.672420', NULL, NULL, 3),
-(146, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:53:45.427481', NULL, 1, 1),
-(147, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:53:55.966870', NULL, 1, 1),
-(148, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:54:03.506581', NULL, NULL, 3),
-(149, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:54:04.105696', NULL, NULL, 3),
-(150, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:54:39.847726', NULL, NULL, 3),
-(151, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:54:41.091195', NULL, NULL, 3),
-(152, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:55:39.858878', NULL, NULL, 4),
-(153, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:55:40.844924', NULL, NULL, 4),
-(154, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 14:55:43.107643', NULL, NULL, 4),
-(155, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:55:44.848486', NULL, NULL, 4),
-(156, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:55:52.551481', NULL, NULL, 4),
-(157, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:56:04.849908', NULL, NULL, 4),
-(158, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:56:06.221705', NULL, NULL, 4),
-(159, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 14:56:07.785083', NULL, NULL, 4),
-(160, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:56:09.487250', NULL, NULL, 4),
-(161, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:56:44.108338', NULL, 1, 1),
-(162, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:56:54.825199', NULL, 1, 1),
-(163, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:57:05.276572', NULL, 1, 1),
-(164, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:57:07.789361', NULL, NULL, 3),
-(165, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:57:08.922069', NULL, NULL, 3),
-(166, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:57:15.719485', NULL, 1, 1),
-(167, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:57:26.460690', NULL, 1, 1),
-(168, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:57:31.037356', NULL, NULL, 3),
-(169, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:57:31.837757', NULL, NULL, 3),
-(170, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:57:36.781939', NULL, 1, 1),
-(171, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:57:57.797817', NULL, 1, 1),
-(172, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:58:05.712053', NULL, NULL, 4),
-(173, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:58:08.406196', NULL, 1, 1),
-(174, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.6)', 'AUTO', '2026-03-26 14:58:18.755336', NULL, 1, 1),
-(175, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 32.7)', 'AUTO', '2026-03-26 14:58:29.304063', NULL, 1, 1),
-(176, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:58:34.222322', NULL, NULL, 3),
-(177, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:58:34.435578', NULL, NULL, 3),
-(178, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:58:37.086316', NULL, NULL, 3),
-(179, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:58:37.587698', NULL, NULL, 3),
-(180, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 14:58:38.370329', NULL, NULL, 3),
-(181, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:58:38.843294', NULL, NULL, 3),
-(182, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:59:27.995443', NULL, NULL, 4),
-(183, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:59:40.522677', NULL, NULL, 4),
-(184, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 14:59:41.184899', NULL, NULL, 4),
-(185, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 14:59:43.701462', NULL, NULL, 4),
-(186, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:59:44.818394', NULL, NULL, 4),
-(187, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:59:48.248714', NULL, NULL, 4),
-(188, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 14:59:48.971882', NULL, NULL, 4),
-(189, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:00:20.570923', NULL, NULL, 4),
-(190, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:00:21.230491', NULL, NULL, 4),
-(191, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:08:12.786109', NULL, NULL, 4),
-(192, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:08:14.768608', NULL, NULL, 4),
-(193, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:09:25.081227', NULL, NULL, 4),
-(194, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:09:27.412387', NULL, NULL, 4),
-(195, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:09:29.550127', NULL, NULL, 4),
-(196, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:09:30.444115', NULL, NULL, 4),
-(197, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 15:09:32.584130', NULL, NULL, 4),
-(198, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:09:35.350624', NULL, NULL, 4),
-(199, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:09:54.802367', NULL, NULL, 3),
-(200, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:10:06.823698', NULL, NULL, 3),
-(201, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:10:10.083435', NULL, NULL, 3),
-(202, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:10:11.745781', NULL, NULL, 3),
-(203, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:10:12.971930', NULL, NULL, 3),
-(204, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:22:15.327433', NULL, NULL, 3),
-(205, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:22:16.488542', NULL, NULL, 3),
-(206, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:22:18.758420', NULL, NULL, 4),
-(207, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:22:20.590711', NULL, NULL, 4),
-(208, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:34:25.304386', NULL, NULL, 3),
-(209, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:34:26.381675', NULL, NULL, 3),
-(210, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 33.2)', 'AUTO', '2026-03-26 15:36:07.340677', NULL, 1, 1),
-(211, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:36:14.691832', NULL, NULL, 3),
-(212, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:36:16.994541', NULL, NULL, 3),
-(213, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:36:17.720971', NULL, NULL, 3),
-(214, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 33.6)', 'AUTO', '2026-03-26 15:36:18.075396', NULL, 1, 1),
-(215, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 33.9)', 'AUTO', '2026-03-26 15:36:28.472418', NULL, 1, 1),
-(216, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 34)', 'AUTO', '2026-03-26 15:36:39.039202', NULL, 1, 1),
-(217, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 34)', 'AUTO', '2026-03-26 15:36:49.580532', NULL, 1, 1),
-(218, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 33.8)', 'AUTO', '2026-03-26 15:37:00.024558', NULL, 1, 1),
-(219, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 34.2)', 'AUTO', '2026-03-26 15:37:10.615193', NULL, 1, 1),
-(220, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 34.8)', 'AUTO', '2026-03-26 15:37:21.086096', NULL, 1, 1),
-(221, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 35.8)', 'AUTO', '2026-03-26 15:37:31.578259', NULL, 1, 1),
-(222, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 36.7)', 'AUTO', '2026-03-26 15:37:42.156819', NULL, 1, 1),
-(223, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 37.4)', 'AUTO', '2026-03-26 15:37:52.594298', NULL, 1, 1),
-(224, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 38.1)', 'AUTO', '2026-03-26 15:38:03.170205', NULL, 1, 1),
-(225, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 38.7)', 'AUTO', '2026-03-26 15:38:13.611680', NULL, 1, 1),
-(226, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:38:23.743922', NULL, NULL, 4),
-(227, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 39.1)', 'AUTO', '2026-03-26 15:38:24.184961', NULL, 1, 1),
-(228, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:38:29.880410', NULL, NULL, 4),
-(229, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:38:31.482760', NULL, NULL, 4),
-(230, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 15:38:34.504526', NULL, NULL, 4),
-(231, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:39:02.937443', NULL, NULL, 4),
-(232, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:39:05.522710', NULL, NULL, 4),
-(233, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 39.4)', 'AUTO', '2026-03-26 15:39:06.268553', NULL, 1, 1),
-(234, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:39:07.616905', NULL, NULL, 4),
-(235, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:39:08.903812', NULL, NULL, 4),
-(236, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 38.7)', 'AUTO', '2026-03-26 15:39:16.795132', NULL, 1, 1),
-(237, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 37.7)', 'AUTO', '2026-03-26 15:39:27.319054', NULL, 1, 1),
-(238, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 36.7)', 'AUTO', '2026-03-26 15:39:37.766188', NULL, 1, 1),
-(239, 'TEMP_ALERT', 'Vượt ngưỡng (Hiện tại: 35.8)', 'AUTO', '2026-03-26 15:39:48.281565', NULL, 1, 1),
-(240, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:40:15.353131', NULL, NULL, 4),
-(241, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:40:16.164911', NULL, NULL, 4),
-(242, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:40:19.441766', NULL, NULL, 4),
-(243, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 15:40:20.357010', NULL, NULL, 4),
-(244, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:42:53.226205', NULL, NULL, 4),
-(245, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:46:31.652723', NULL, NULL, 3),
-(246, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:46:34.744298', NULL, NULL, 3),
-(247, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:46:38.258609', NULL, NULL, 4),
-(248, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:46:40.294676', NULL, NULL, 4),
-(249, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:47:06.294984', NULL, NULL, 4),
-(250, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:47:09.629682', NULL, NULL, 4),
-(251, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 15:47:12.716850', NULL, NULL, 4),
-(252, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:47:28.604817', NULL, NULL, 4),
-(253, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 15:47:47.004563', NULL, NULL, 4),
-(254, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:48:09.553379', NULL, NULL, 4),
-(255, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:48:42.648545', NULL, NULL, 4),
-(256, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:48:59.782066', NULL, NULL, 4),
-(257, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:49:02.062836', NULL, NULL, 4),
-(258, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-26 15:49:03.948107', NULL, NULL, 4),
-(259, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:49:06.272764', NULL, NULL, 4),
-(260, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:49:22.785074', NULL, NULL, 3),
-(261, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-26 15:49:35.855061', NULL, NULL, 3),
-(262, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:49:40.494111', NULL, NULL, 3),
-(263, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:51:24.588488', NULL, NULL, 4),
-(264, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_1 từ Web', 'MANUAL', '2026-03-26 15:51:25.449797', NULL, NULL, 4),
-(265, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_2 từ Web', 'MANUAL', '2026-03-26 15:51:26.324149', NULL, NULL, 4),
-(266, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-26 15:51:27.175501', NULL, NULL, 4),
-(267, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-27 11:04:03.021731', NULL, NULL, 3),
-(268, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-27 11:04:04.501762', NULL, NULL, 3),
-(269, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh ON từ Web', 'MANUAL', '2026-03-27 11:07:30.800264', NULL, NULL, 3),
-(270, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-27 11:07:31.531376', NULL, NULL, 3),
-(271, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh MODE_3 từ Web', 'MANUAL', '2026-03-27 11:07:45.332579', NULL, NULL, 4),
-(272, 'MANUAL_CONTROL', 'Người dùng điều kiển lệnh OFF từ Web', 'MANUAL', '2026-03-27 11:08:25.280581', NULL, NULL, 4),
-(273, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 12:07:50.014625', NULL, NULL, 3),
-(274, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 12:07:51.798164', NULL, NULL, 3),
-(275, 'MODE_CHANGE', 'Sếp gạt công tắc chuyển sang chế độ Tắt tự động (Thủ công)', 'MANUAL', '2026-03-27 12:28:33.317358', NULL, 1, NULL),
-(276, 'MODE_CHANGE', 'Sếp gạt công tắc chuyển sang chế độ Tự động (Khuyên dùng)', 'MANUAL', '2026-03-27 12:28:34.735943', NULL, 1, NULL),
-(277, 'MODE_CHANGE', 'Đã chuyển sang chế độ Tắt tự động', 'MANUAL', '2026-03-27 12:31:40.985620', NULL, 1, NULL),
-(278, 'MODE_CHANGE', 'Đã chuyển sang chế độ Tự động', 'MANUAL', '2026-03-27 12:31:42.971385', NULL, 1, NULL),
-(279, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động (Thủ công)', 'MANUAL', '2026-03-27 12:43:14.843529', NULL, 1, NULL),
-(280, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 12:43:53.994157', NULL, 1, NULL),
-(281, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động', 'MANUAL', '2026-03-27 12:43:55.078391', NULL, 1, NULL),
-(282, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 12:43:58.872285', NULL, 1, NULL),
-(283, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động', 'MANUAL', '2026-03-27 12:44:00.404099', NULL, 1, NULL),
-(284, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 12:44:22.676105', NULL, 1, NULL),
-(285, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_3 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:34:25.218731', NULL, NULL, 4),
-(286, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_1 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:34:27.641829', NULL, NULL, 4),
-(287, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_2 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:34:29.425587', NULL, NULL, 4),
-(288, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:40:24.549807', NULL, NULL, 4),
-(289, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động', 'MANUAL', '2026-03-27 13:40:52.819236', NULL, 1, NULL),
-(290, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 13:40:53.486509', NULL, 1, NULL),
-(291, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:41:06.785124', NULL, NULL, 3),
-(292, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:43:00.508124', NULL, NULL, 3),
-(293, 'TEMP_ALERT', 'Vượt ngưỡng (28.9°C). Auto đã bật Quạt.', 'AUTO', '2026-03-27 13:56:28.969322', NULL, 1, 1),
-(294, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động', 'MANUAL', '2026-03-27 13:56:36.183692', NULL, 1, NULL),
-(295, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:56:37.929571', NULL, NULL, 3),
-(296, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:56:39.125764', NULL, NULL, 3),
-(297, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:57:00.470577', NULL, NULL, 3),
-(298, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:57:01.441446', NULL, NULL, 4),
-(299, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:57:17.105591', NULL, NULL, 3),
-(300, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:57:18.157634', NULL, NULL, 3),
-(301, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 13:58:08.989054', NULL, 1, NULL),
-(302, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:58:22.846730', NULL, NULL, 3),
-(303, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:58:23.818818', NULL, NULL, 3),
-(304, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:58:32.017937', NULL, NULL, 3),
-(305, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:58:35.934514', NULL, NULL, 3),
-(306, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động', 'MANUAL', '2026-03-27 13:58:43.639633', NULL, 1, NULL),
-(307, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:59:13.961299', NULL, NULL, 3),
-(308, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 13:59:15.445938', NULL, NULL, 3),
-(309, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:02:09.968994', NULL, NULL, 3),
-(310, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:02:13.164736', NULL, NULL, 3),
-(311, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:10:46.557688', NULL, NULL, 3),
-(312, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:10:50.172382', NULL, NULL, 3),
-(313, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_1 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:12:01.945730', NULL, NULL, 4),
-(314, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_2 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:12:05.347645', NULL, NULL, 4),
-(315, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_3 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:12:08.124992', NULL, NULL, 4),
-(316, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:12:12.791651', NULL, NULL, 4),
-(317, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh ON từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:19.338924', NULL, NULL, 3),
-(318, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:22.341055', NULL, NULL, 3),
-(319, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_1 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:36.287144', NULL, NULL, 4),
-(320, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_2 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:39.584487', NULL, NULL, 4),
-(321, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_3 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:43.250367', NULL, NULL, 4),
-(322, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh MODE_3 từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:56.821097', NULL, NULL, 4),
-(323, 'MANUAL_CONTROL', 'Người dùng điều khiển lệnh OFF từ Web. Auto nhường Sếp 30 phút.', 'MANUAL', '2026-03-27 14:23:58.083019', NULL, NULL, 4),
-(324, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 14:25:42.203199', NULL, 1, NULL),
-(325, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tắt tự động', 'MANUAL', '2026-03-27 14:31:01.508381', NULL, 1, NULL),
-(326, 'MODE_CHANGE', '[Kho Lạnh Thủ Đức - Khu A - Thịt Tươi] đã chuyển sang Tự động', 'MANUAL', '2026-03-27 14:31:02.542569', NULL, 1, NULL),
-(327, 'MANUAL_CONTROL', 'Điều khiển thủ công: lệnh ON cho Cảm biến Cửa (Nút A). Auto nhường Sếp 1 phút.', 'MANUAL', '2026-04-20 22:47:00.195502', NULL, 1, 6);
+INSERT INTO `action_logs` (`id`, `action_type`, `action_value`, `trigger_source`, `created_at`, `user_id`, `area_id`, `device_id`, `is_resolved`, `is_escalated`, `resolved_at`, `resolve_note`) VALUES
+(338, 'TEMP_ALERT', 'Quá ngưỡng trên (0°C). Auto BẬT quạt.', 'AUTO', '2026-04-28 10:33:32.874165', NULL, 1, 1, 0, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -399,6 +77,24 @@ INSERT INTO `areas` (`id`, `area_name`, `auto_door_timeout_sec`, `manual_overrid
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `area_food_types`
+--
+
+CREATE TABLE `area_food_types` (
+  `area_id` int(11) NOT NULL,
+  `food_type_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `area_food_types`
+--
+
+INSERT INTO `area_food_types` (`area_id`, `food_type_id`) VALUES
+(1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `devices`
 --
 
@@ -409,23 +105,25 @@ CREATE TABLE `devices` (
   `device_type` varchar(255) NOT NULL,
   `adafruit_feed_key` varchar(255) DEFAULT NULL,
   `status` varchar(255) NOT NULL DEFAULT 'ONLINE',
-  `area_id` int(11) DEFAULT NULL
+  `area_id` int(11) DEFAULT NULL,
+  `schedule_on_time` varchar(5) DEFAULT NULL,
+  `schedule_off_time` varchar(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `devices`
 --
 
-INSERT INTO `devices` (`id`, `device_code`, `device_name`, `device_type`, `adafruit_feed_key`, `status`, `area_id`) VALUES
-(1, 'TEMP_A1', 'Cảm biến Nhiệt độ', 'TEMP', 'nhietdo1', 'ONLINE', 1),
-(2, 'HUMI_A1', 'Cảm biến Độ ẩm', 'HUMI', 'doam1', 'ONLINE', 1),
-(3, 'FAN_A1', 'Quạt Làm lạnh', 'ACTUATOR', 'quat1', 'OFF', 1),
-(4, 'LIGHT_A1', 'Đèn Chiếu Sáng', 'ACTUATOR', 'den1', 'OFF', 1),
-(5, 'MATRIX_A1', 'Đèn Tầng Cảnh Báo', 'ACTUATOR', 'led_matrix', 'RED_BLINK', 1),
-(6, 'DOOR_A1', 'Cảm biến Cửa (Nút A)', 'DOOR_SENSOR', 'nut_a', 'OFF', 1),
-(7, 'SOS_A1', 'Nút Khẩn Cấp (Nút B)', 'EMERGENCY_BTN', 'nut_b', 'ONLINE', 1),
-(8, 'CO2_A1', 'Cảm biến CO2', 'CO2_SENSOR', 'co2_1', 'ONLINE', 1),
-(9, 'BRIGHT_A1', 'Cảm biến Ánh sáng', 'BRIGHT', 'anhsang1', 'ONLINE', 1);
+INSERT INTO `devices` (`id`, `device_code`, `device_name`, `device_type`, `adafruit_feed_key`, `status`, `area_id`, `schedule_on_time`, `schedule_off_time`) VALUES
+(1, 'TEMP_A1', 'Cảm biến Nhiệt độ', 'TEMP', 'nhietdo1', 'ONLINE', 1, NULL, NULL),
+(2, 'HUMI_A1', 'Cảm biến Độ ẩm', 'HUMI', 'doam1', 'ONLINE', 1, NULL, NULL),
+(3, 'FAN_A1', 'Quạt Làm lạnh', 'ACTUATOR', 'quat1', 'ON', 1, NULL, NULL),
+(4, 'LIGHT_A1', 'Đèn Chiếu Sáng', 'ACTUATOR', 'den1', 'OFF', 1, NULL, NULL),
+(5, 'MATRIX_A1', 'Đèn Tầng Cảnh Báo', 'ACTUATOR', 'led_matrix', 'RED_BLINK', 1, NULL, NULL),
+(6, 'DOOR_A1', 'Cảm biến Cửa (Nút A)', 'DOOR_SENSOR', 'nut_a', 'OFF', 1, NULL, NULL),
+(7, 'SOS_A1', 'Nút Khẩn Cấp (Nút B)', 'EMERGENCY_BTN', 'nut_b', 'ONLINE', 1, NULL, NULL),
+(8, 'CO2_A1', 'Cảm biến CO2', 'CO2_SENSOR', 'co2_1', 'ONLINE', 1, NULL, NULL),
+(9, 'BRIGHT_A1', 'Cảm biến Ánh sáng', 'BRIGHT', 'anhsang1', 'ONLINE', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2143,7 +1841,164 @@ INSERT INTO `sensor_readings` (`id`, `sensor_type`, `reading_value`, `recorded_a
 (1647, 'CO2', 424, '2026-04-20 23:09:00.016337', 8),
 (1648, 'CO2', 405, '2026-04-20 23:09:00.016552', 8),
 (1649, 'CO2', 361, '2026-04-20 23:10:00.029866', 8),
-(1650, 'CO2', 370, '2026-04-20 23:10:00.029968', 8);
+(1650, 'CO2', 370, '2026-04-20 23:10:00.029968', 8),
+(1651, 'CO2', 396, '2026-04-28 07:48:00.069729', 8),
+(1652, 'CO2', 437, '2026-04-28 07:48:00.070150', 8),
+(1653, 'CO2', 448, '2026-04-28 07:49:00.030319', 8),
+(1654, 'CO2', 418, '2026-04-28 07:49:00.030667', 8),
+(1655, 'CO2', 417, '2026-04-28 07:50:00.029081', 8),
+(1656, 'CO2', 431, '2026-04-28 07:50:00.029692', 8),
+(1657, 'CO2', 418, '2026-04-28 07:51:00.014449', 8),
+(1658, 'CO2', 377, '2026-04-28 07:51:00.014626', 8),
+(1659, 'CO2', 431, '2026-04-28 07:52:00.025806', 8),
+(1660, 'CO2', 441, '2026-04-28 07:52:00.025992', 8),
+(1661, 'CO2', 439, '2026-04-28 07:53:00.023346', 8),
+(1662, 'CO2', 444, '2026-04-28 07:53:00.024495', 8),
+(1663, 'CO2', 410, '2026-04-28 07:54:00.046477', 8),
+(1664, 'CO2', 399, '2026-04-28 07:54:00.047739', 8),
+(1665, 'CO2', 402, '2026-04-28 07:55:00.028032', 8),
+(1666, 'CO2', 445, '2026-04-28 07:55:00.028654', 8),
+(1667, 'CO2', 386, '2026-04-28 07:56:00.019727', 8),
+(1668, 'CO2', 437, '2026-04-28 07:56:00.020199', 8),
+(1669, 'CO2', 416, '2026-04-28 07:57:00.027833', 8),
+(1670, 'CO2', 397, '2026-04-28 07:57:00.027993', 8),
+(1671, 'CO2', 372, '2026-04-28 07:58:00.017438', 8),
+(1672, 'CO2', 450, '2026-04-28 07:58:00.017626', 8),
+(1673, 'CO2', 448, '2026-04-28 07:59:00.018487', 8),
+(1674, 'CO2', 400, '2026-04-28 07:59:00.018683', 8),
+(1675, 'CO2', 442, '2026-04-28 08:00:00.024498', 8),
+(1676, 'CO2', 442, '2026-04-28 08:00:00.025665', 8),
+(1677, 'CO2', 435, '2026-04-28 08:01:00.018550', 8),
+(1678, 'CO2', 419, '2026-04-28 08:01:00.018715', 8),
+(1679, 'CO2', 414, '2026-04-28 08:02:00.023756', 8),
+(1680, 'CO2', 369, '2026-04-28 08:02:00.024059', 8),
+(1681, 'CO2', 351, '2026-04-28 08:03:00.013989', 8),
+(1682, 'CO2', 376, '2026-04-28 08:03:00.014116', 8),
+(1683, 'CO2', 412, '2026-04-28 08:04:00.036000', 8),
+(1684, 'CO2', 359, '2026-04-28 08:04:00.036157', 8),
+(1685, 'CO2', 357, '2026-04-28 08:05:00.021769', 8),
+(1686, 'CO2', 377, '2026-04-28 08:05:00.021798', 8),
+(1687, 'CO2', 443, '2026-04-28 08:06:00.013293', 8),
+(1688, 'CO2', 415, '2026-04-28 08:06:00.013323', 8),
+(1689, 'CO2', 420, '2026-04-28 08:07:00.032272', 8),
+(1690, 'CO2', 444, '2026-04-28 08:07:00.032818', 8),
+(1691, 'CO2', 437, '2026-04-28 08:08:00.037410', 8),
+(1692, 'CO2', 447, '2026-04-28 08:08:00.037601', 8),
+(1693, 'CO2', 433, '2026-04-28 08:09:00.014947', 8),
+(1694, 'CO2', 414, '2026-04-28 08:09:00.015310', 8),
+(1695, 'CO2', 450, '2026-04-28 08:10:00.011102', 8),
+(1696, 'CO2', 369, '2026-04-28 08:10:00.011254', 8),
+(1697, 'CO2', 398, '2026-04-28 08:11:00.017128', 8),
+(1698, 'CO2', 399, '2026-04-28 08:11:00.017648', 8),
+(1699, 'CO2', 434, '2026-04-28 08:12:00.022459', 8),
+(1700, 'CO2', 374, '2026-04-28 08:12:00.024340', 8),
+(1701, 'CO2', 375, '2026-04-28 08:13:00.019931', 8),
+(1702, 'CO2', 443, '2026-04-28 08:13:00.020075', 8),
+(1703, 'CO2', 433, '2026-04-28 08:14:00.027432', 8),
+(1704, 'CO2', 388, '2026-04-28 08:14:00.027757', 8),
+(1705, 'CO2', 363, '2026-04-28 08:15:00.024855', 8),
+(1706, 'CO2', 368, '2026-04-28 08:15:00.025018', 8),
+(1707, 'CO2', 373, '2026-04-28 08:16:00.012236', 8),
+(1708, 'CO2', 385, '2026-04-28 08:16:00.012624', 8),
+(1709, 'CO2', 368, '2026-04-28 08:17:00.018927', 8),
+(1710, 'CO2', 376, '2026-04-28 08:17:00.019091', 8),
+(1711, 'CO2', 350, '2026-04-28 08:18:00.022909', 8),
+(1712, 'CO2', 392, '2026-04-28 08:18:00.023599', 8),
+(1713, 'CO2', 387, '2026-04-28 08:19:00.022514', 8),
+(1714, 'CO2', 436, '2026-04-28 08:19:00.022805', 8),
+(1715, 'CO2', 390, '2026-04-28 08:20:00.020132', 8),
+(1716, 'CO2', 421, '2026-04-28 08:20:00.020395', 8),
+(1717, 'CO2', 405, '2026-04-28 08:21:00.025152', 8),
+(1718, 'CO2', 412, '2026-04-28 08:21:00.025340', 8),
+(1719, 'CO2', 421, '2026-04-28 08:22:00.015936', 8),
+(1720, 'CO2', 430, '2026-04-28 08:22:00.016085', 8),
+(1721, 'CO2', 375, '2026-04-28 08:23:00.018443', 8),
+(1722, 'CO2', 420, '2026-04-28 08:23:00.018858', 8),
+(1723, 'CO2', 443, '2026-04-28 08:24:00.025125', 8),
+(1724, 'CO2', 389, '2026-04-28 08:24:00.025310', 8),
+(1725, 'CO2', 405, '2026-04-28 08:25:00.022275', 8),
+(1726, 'CO2', 351, '2026-04-28 08:25:00.022331', 8),
+(1727, 'CO2', 373, '2026-04-28 08:26:00.024040', 8),
+(1728, 'CO2', 432, '2026-04-28 08:26:00.024183', 8),
+(1729, 'CO2', 402, '2026-04-28 08:27:00.015332', 8),
+(1730, 'CO2', 408, '2026-04-28 08:27:00.015557', 8),
+(1731, 'CO2', 404, '2026-04-28 08:29:00.034769', 8),
+(1732, 'CO2', 354, '2026-04-28 08:29:00.035400', 8),
+(1733, 'CO2', 354, '2026-04-28 08:30:00.019965', 8),
+(1734, 'CO2', 417, '2026-04-28 08:30:00.021124', 8),
+(1735, 'CO2', 355, '2026-04-28 08:31:00.014915', 8),
+(1736, 'CO2', 416, '2026-04-28 08:31:00.015622', 8),
+(1737, 'CO2', 389, '2026-04-28 08:32:00.020759', 8),
+(1738, 'CO2', 353, '2026-04-28 08:32:00.021118', 8),
+(1739, 'CO2', 390, '2026-04-28 08:33:00.014783', 8),
+(1740, 'CO2', 424, '2026-04-28 08:33:00.014890', 8),
+(1741, 'CO2', 412, '2026-04-28 08:34:00.013880', 8),
+(1742, 'CO2', 372, '2026-04-28 08:34:00.014305', 8),
+(1743, 'CO2', 400, '2026-04-28 08:35:00.020301', 8),
+(1744, 'CO2', 366, '2026-04-28 08:35:00.020465', 8),
+(1745, 'CO2', 381, '2026-04-28 08:36:00.039164', 8),
+(1746, 'CO2', 394, '2026-04-28 08:36:00.039688', 8),
+(1747, 'CO2', 430, '2026-04-28 08:37:00.015058', 8),
+(1748, 'CO2', 418, '2026-04-28 08:37:00.015250', 8),
+(1749, 'CO2', 379, '2026-04-28 08:38:00.014687', 8),
+(1750, 'CO2', 378, '2026-04-28 08:38:00.015756', 8),
+(1751, 'CO2', 369, '2026-04-28 08:39:00.022665', 8),
+(1752, 'CO2', 399, '2026-04-28 08:39:00.022924', 8),
+(1753, 'CO2', 377, '2026-04-28 08:40:00.015175', 8),
+(1754, 'CO2', 406, '2026-04-28 08:40:00.015335', 8),
+(1755, 'CO2', 373, '2026-04-28 08:41:00.016999', 8),
+(1756, 'CO2', 429, '2026-04-28 08:41:00.017185', 8),
+(1757, 'CO2', 432, '2026-04-28 08:42:00.019216', 8),
+(1758, 'CO2', 445, '2026-04-28 08:42:00.020020', 8),
+(1759, 'CO2', 432, '2026-04-28 08:43:00.010414', 8),
+(1760, 'CO2', 397, '2026-04-28 08:43:00.010540', 8),
+(1761, 'CO2', 354, '2026-04-28 08:44:00.019653', 8),
+(1762, 'CO2', 361, '2026-04-28 08:44:00.020001', 8),
+(1763, 'CO2', 377, '2026-04-28 08:45:00.033885', 8),
+(1764, 'CO2', 408, '2026-04-28 08:45:00.034995', 8),
+(1765, 'CO2', 384, '2026-04-28 08:46:00.013749', 8),
+(1766, 'CO2', 401, '2026-04-28 08:46:00.013922', 8),
+(1767, 'CO2', 446, '2026-04-28 08:47:00.043556', 8),
+(1768, 'CO2', 383, '2026-04-28 08:47:00.044235', 8),
+(1769, 'CO2', 376, '2026-04-28 08:48:00.052729', 8),
+(1770, 'CO2', 405, '2026-04-28 08:48:00.060489', 8),
+(1771, 'CO2', 354, '2026-04-28 08:49:00.017800', 8),
+(1772, 'CO2', 392, '2026-04-28 08:49:00.022089', 8),
+(1773, 'CO2', 440, '2026-04-28 08:50:00.029856', 8),
+(1774, 'CO2', 420, '2026-04-28 08:50:00.030380', 8),
+(1775, 'CO2', 440, '2026-04-28 08:51:00.025819', 8),
+(1776, 'CO2', 370, '2026-04-28 08:51:00.026366', 8),
+(1777, 'CO2', 392, '2026-04-28 08:52:00.018088', 8),
+(1778, 'CO2', 368, '2026-04-28 08:52:00.018215', 8),
+(1779, 'CO2', 374, '2026-04-28 08:53:00.023192', 8),
+(1780, 'CO2', 406, '2026-04-28 08:53:00.024160', 8),
+(1781, 'CO2', 395, '2026-04-28 08:54:00.018740', 8),
+(1782, 'CO2', 364, '2026-04-28 08:54:00.018891', 8),
+(1783, 'CO2', 423, '2026-04-28 08:55:00.022318', 8),
+(1784, 'CO2', 437, '2026-04-28 08:55:00.022484', 8),
+(1785, 'CO2', 383, '2026-04-28 08:56:00.024773', 8),
+(1786, 'CO2', 362, '2026-04-28 08:56:00.026283', 8),
+(1787, 'CO2', 421, '2026-04-28 08:57:00.064758', 8),
+(1788, 'CO2', 413, '2026-04-28 08:57:00.076109', 8),
+(1789, 'CO2', 387, '2026-04-28 08:58:00.017700', 8),
+(1790, 'CO2', 378, '2026-04-28 08:58:00.018249', 8),
+(1791, 'TEMP', 30, '2026-04-28 10:00:36.889615', 1),
+(1792, 'TEMP', -11, '2026-04-28 10:02:12.911011', 1),
+(1793, 'TEMP', -19, '2026-04-28 10:02:37.192496', 1),
+(1794, 'TEMP', -17, '2026-04-28 10:02:50.381902', 1),
+(1795, 'TEMP', -4, '2026-04-28 10:03:24.889892', 1),
+(1796, 'TEMP', -6, '2026-04-28 10:04:45.117043', 1),
+(1797, 'TEMP', -18, '2026-04-28 10:04:54.433825', 1),
+(1798, 'TEMP', -19, '2026-04-28 10:05:13.717763', 1),
+(1799, 'TEMP', -18, '2026-04-28 10:05:25.326909', 1),
+(1800, 'TEMP', -19, '2026-04-28 10:05:40.321852', 1),
+(1801, 'TEMP', -15, '2026-04-28 10:05:48.842068', 1),
+(1802, 'TEMP', -19, '2026-04-28 10:12:28.453258', 1),
+(1803, 'TEMP', -4, '2026-04-28 10:13:10.485423', 1),
+(1804, 'TEMP', -8, '2026-04-28 10:13:32.365911', 1),
+(1805, 'TEMP', 0, '2026-04-28 10:24:10.898686', 1),
+(1806, 'TEMP', 0, '2026-04-28 10:26:39.459590', 1),
+(1807, 'TEMP', 0, '2026-04-28 10:33:32.854693', 1);
 
 -- --------------------------------------------------------
 
@@ -2156,16 +2011,28 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL DEFAULT 'OPERATOR',
-  `full_name` varchar(255) DEFAULT NULL
+  `full_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `full_name`) VALUES
-(1, 'admin', '123456', 'ADMIN', 'Tiến Đạt (Sếp Tổng)'),
-(2, 'nhanvien1', '123456', 'OPERATOR', 'Nguyễn Văn A');
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `full_name`, `email`) VALUES
+(1, 'admin', '123456', 'ADMIN', 'Tiến Đạt (Sếp Tổng)', NULL),
+(2, 'nhanvien1', '123456', 'OPERATOR', 'Nguyễn Văn A', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_area_management`
+--
+
+CREATE TABLE `user_area_management` (
+  `user_id` int(11) NOT NULL,
+  `area_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2209,6 +2076,12 @@ ALTER TABLE `areas`
   ADD KEY `fk_area_user` (`user_id`);
 
 --
+-- Indexes for table `area_food_types`
+--
+ALTER TABLE `area_food_types`
+  ADD PRIMARY KEY (`area_id`,`food_type_id`);
+
+--
 -- Indexes for table `devices`
 --
 ALTER TABLE `devices`
@@ -2220,8 +2093,7 @@ ALTER TABLE `devices`
 -- Indexes for table `device_schedules`
 --
 ALTER TABLE `device_schedules`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_device_schedules_device` (`deviceId`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `food_types`
@@ -2243,6 +2115,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user_area_management`
+--
+ALTER TABLE `user_area_management`
+  ADD PRIMARY KEY (`user_id`,`area_id`);
+
+--
 -- Indexes for table `warehouses`
 --
 ALTER TABLE `warehouses`
@@ -2256,7 +2134,7 @@ ALTER TABLE `warehouses`
 -- AUTO_INCREMENT for table `action_logs`
 --
 ALTER TABLE `action_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=328;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=339;
 
 --
 -- AUTO_INCREMENT for table `areas`
@@ -2286,7 +2164,7 @@ ALTER TABLE `food_types`
 -- AUTO_INCREMENT for table `sensor_readings`
 --
 ALTER TABLE `sensor_readings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1651;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1808;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -2325,12 +2203,6 @@ ALTER TABLE `areas`
 --
 ALTER TABLE `devices`
   ADD CONSTRAINT `FK_4f81d9e267525f4d1e9f4b69d07` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `device_schedules`
---
-ALTER TABLE `device_schedules`
-  ADD CONSTRAINT `FK_device_schedules_device` FOREIGN KEY (`deviceId`) REFERENCES `devices` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sensor_readings`

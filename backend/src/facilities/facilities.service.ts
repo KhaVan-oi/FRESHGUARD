@@ -192,11 +192,20 @@ export class FacilitiesService {
     };
   }
 
-  async resolveAlert(logId: number) {
+  async resolveAlert(logId: number, note: string, userId: number) {
     const log = await this.actionLogRepo.findOne({ where: { id: logId } });
     if (!log) throw new NotFoundException('Không tìm thấy log cảnh báo');
 
+    // Cập nhật thông tin
     log.is_resolved = true;
+    log.resolved_at = new Date(); // Ghi nhận thời điểm bấm nút
+    log.resolve_note = note; // Ghi nhận note từ UI
+
+    // Gắn ID của người thao tác vào log (Trích từ quan hệ user)
+    if (userId) {
+      log.user = { id: userId } as any;
+    }
+
     await this.actionLogRepo.save(log);
 
     // Ghi nhận thêm 1 log là nhân viên đã dọn dẹp xong

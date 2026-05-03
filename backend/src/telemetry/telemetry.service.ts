@@ -40,6 +40,7 @@ export class TelemetryService {
     return await this.actionLogRepo
       .createQueryBuilder('log')
       .leftJoinAndSelect('log.area', 'area')
+      .leftJoinAndSelect('log.user', 'user')
       .orderBy('log.created_at', 'DESC')
       .take(limit)
       .getMany();

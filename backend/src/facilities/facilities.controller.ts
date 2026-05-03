@@ -112,4 +112,13 @@ export class FacilitiesController {
     await this.facilitiesService.deleteFoodType(id);
     return { status: 'success', message: 'Đã xóa loại thực phẩm' };
   }
+
+  @Put('action-logs/:id/resolve')
+  async resolveAlert(
+    @Param('id') id: number,
+    @Body() body: { note: string; user_id: number }, // Lấy data FE gửi lên
+  ) {
+    // Gọi xuống service
+    return this.facilitiesService.resolveAlert(id, body.note, body.user_id);
+  }
 }
