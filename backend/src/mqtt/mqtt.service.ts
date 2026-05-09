@@ -228,7 +228,7 @@ export class MqttService implements OnModuleInit {
             );
             this.publishToAdafruit('quat1', 'ON');
             this.publishToAdafruit('led_matrix', 'RED_BLINK');
-            
+
             await this.logRepo.save(
               this.logRepo.create({
                 action_type: alertType, // Nó sẽ tự lấy TEMP_ALERT hoặc HUMI_ALERT
@@ -247,8 +247,7 @@ export class MqttService implements OnModuleInit {
                 ? area.operators.map((op) => op.id)
                 : [],
             });
-            
-          } 
+          }
           // 2. NẾU QUÁ LẠNH / QUÁ KHÔ
           else if (isTooCold) {
             console.log(
@@ -275,8 +274,7 @@ export class MqttService implements OnModuleInit {
                 ? area.operators.map((op) => op.id)
                 : [],
             });
-            
-          } 
+          }
           // 3. NẾU AN TOÀN (Logic chéo hàng xóm sếp cứ giữ nguyên)
           else if (isNormal) {
             // 1. Xác định thằng "hàng xóm" là ai (TEMP <-> HUMI)
@@ -319,6 +317,16 @@ export class MqttService implements OnModuleInit {
               );
               this.publishToAdafruit('quat1', 'OFF');
               this.publishToAdafruit('led_matrix', 'GREEN');
+
+              await this.logRepo.save(
+                this.logRepo.create({
+                  action_type: 'SYSTEM_SAFE',
+                  action_value: `Khu vực đã an toàn. Nhiệt độ và Độ ẩm đều ổn định. Tự động TẮT quạt.`,
+                  trigger_source: 'AUTO',
+                  area,
+                  device,
+                }),
+              );
             } else {
               console.log(
                 `Chỉ số ${device.device_type} an toàn, nhưng ${neighborType} đang báo động. GIỮ NGUYÊN QUẠT!`,
