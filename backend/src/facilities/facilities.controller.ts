@@ -6,7 +6,8 @@ import {
   Delete,
   Body,
   Param,
-  Query
+  Query,
+  ForbiddenException,
 } from '@nestjs/common';
 import { FacilitiesService } from './facilities.service';
 import { Warehouse } from '../entities/warehouse.entity';
@@ -22,12 +23,12 @@ export class FacilitiesController {
   // ==================== WAREHOUSE CRUD ====================
 
   @Get('warehouses')
-async getAllWarehouses(@Query('user_id') userId?: string) {
-  const data = userId
-    ? await this.facilitiesService.getWarehousesByOperator(Number(userId))
-    : await this.facilitiesService.getAllWarehouses();
-  return { status: 'success', data };
-}
+  async getAllWarehouses(@Query('user_id') userId?: string) {
+    const data = userId
+      ? await this.facilitiesService.getWarehousesByOperator(Number(userId))
+      : await this.facilitiesService.getAllWarehouses();
+    return { status: 'success', data };
+  }
 
   // ⚠️ Phải đặt TRƯỚC :id để tránh nhầm 'dashboard' thành id
   @Get('warehouses/dashboard')
@@ -37,7 +38,7 @@ async getAllWarehouses(@Query('user_id') userId?: string) {
       data: await this.facilitiesService.getDashboardData(),
     };
   }
- 
+
   @Get('warehouses/:id')
   async getWarehouseById(@Param('id') id: number) {
     return {
@@ -112,6 +113,7 @@ async getAllWarehouses(@Query('user_id') userId?: string) {
       message: `Đã gán ${res.user} vào khu ${res.area}`,
     };
   }
+
   @Post('areas/:id/add-food')
   async addFood(
     @Param('id') id: number,
@@ -119,6 +121,7 @@ async getAllWarehouses(@Query('user_id') userId?: string) {
   ) {
     return await this.facilitiesService.addFoodToArea(id, foodTypeId);
   }
+
   // ==================== FOOD TYPES ====================
 
   @Get('food-types')
@@ -155,9 +158,155 @@ async getAllWarehouses(@Query('user_id') userId?: string) {
   @Put('action-logs/:id/resolve')
   async resolveAlert(
     @Param('id') id: number,
-    @Body() body: { note: string; user_id: number }, // Lấy data FE gửi lên
+    @Body() body: { note: string; user_id: number },
   ) {
-    // Gọi xuống service
     return this.facilitiesService.resolveAlert(id, body.note, body.user_id);
+  }
+
+  // ==================== SCHEDULES (theo Kho → Khu vực) ====================
+
+  /**
+   * GET /api/warehouses/:warehouseId/areas/:areaId/schedules
+   * Lấy tất cả schedules của các thiết bị trong khu vực đó.
+   * OPERATOR chỉ xem được khu vực mình được gán.
+   * Query: ?user_id=...&role=... (FE tự truyền từ localStorage)
+   */
+  @Get('warehouses/:warehouseId/areas/:areaId/schedules')
+  async getSchedulesByArea(
+    @Param('warehouseId') warehouseId: number,
+    @Param('areaId') areaId: number,
+    @Query('user_id') userId?: string,
+    @Query('role') role?: string,
+  ) {
+    // Kiểm tra quyền: nếu là OPERATOR thì phải được gán vào khu vực này
+    if (role?.toUpperCase() === 'OPERATOR' && userId) {
+      const hasAccess = await this.facilitiesService.checkOperatorAccess(
+        Number(userId),
+        areaId,
+      );
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'Bạn không có quyền xem lịch trình khu vực này',
+        );
+      }
+    }
+
+    const data = await this.facilitiesService.getSchedulesByArea(
+      warehouseId,
+      areaId,
+    );
+    return { status: 'success', data };
+  }
+
+  /**
+   * POST /api/warehouses/:warehouseId/areas/:areaId/schedules
+   * Tạo schedule mới cho thiết bị trong khu vực.
+   * Body: { action, start_time, end_time?, is_active?, device_id, user_id, role }
+   */
+  @Post('warehouses/:warehouseId/areas/:areaId/schedules')
+  async createScheduleInArea(
+    @Param('warehouseId') warehouseId: number,
+    @Param('areaId') areaId: number,
+    @Body()
+    body: {
+      action: string;
+      start_time: string;
+      end_time?: string;
+      is_active?: boolean;
+      device_id: number;
+      user_id?: number;
+      role?: string;
+    },
+  ) {
+    // Kiểm tra quyền
+    if (body.role?.toUpperCase() === 'OPERATOR' && body.user_id) {
+      const hasAccess = await this.facilitiesService.checkOperatorAccess(
+        body.user_id,
+        areaId,
+      );
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'Bạn không có quyền tạo lịch trình cho khu vực này',
+        );
+      }
+    }
+
+    // Kiểm tra device có thuộc area này không
+    await this.facilitiesService.assertDeviceBelongsToArea(
+      body.device_id,
+      areaId,
+    );
+
+    const data = await this.facilitiesService.createSchedule({
+      action: body.action,
+      start_time: body.start_time,
+      end_time: body.end_time,
+      is_active: body.is_active ?? true,
+      device: { id: body.device_id },
+    });
+    return { status: 'success', data };
+  }
+
+  /**
+   * PUT /api/warehouses/:warehouseId/areas/:areaId/schedules/:scheduleId
+   * Cập nhật schedule. Chỉ operator được gán mới được sửa.
+   */
+  @Put('warehouses/:warehouseId/areas/:areaId/schedules/:scheduleId')
+  async updateScheduleInArea(
+    @Param('warehouseId') warehouseId: number,
+    @Param('areaId') areaId: number,
+    @Param('scheduleId') scheduleId: number,
+    @Body()
+    body: {
+      action?: string;
+      start_time?: string;
+      end_time?: string;
+      is_active?: boolean;
+      user_id?: number;
+      role?: string;
+    },
+  ) {
+    if (body.role?.toUpperCase() === 'OPERATOR' && body.user_id) {
+      const hasAccess = await this.facilitiesService.checkOperatorAccess(
+        body.user_id,
+        areaId,
+      );
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'Bạn không có quyền sửa lịch trình khu vực này',
+        );
+      }
+    }
+
+    const data = await this.facilitiesService.updateSchedule(scheduleId, body);
+    return { status: 'success', data };
+  }
+
+  /**
+   * DELETE /api/warehouses/:warehouseId/areas/:areaId/schedules/:scheduleId
+   * Xóa schedule. Chỉ operator được gán mới được xóa.
+   */
+  @Delete('warehouses/:warehouseId/areas/:areaId/schedules/:scheduleId')
+  async deleteScheduleInArea(
+    @Param('warehouseId') warehouseId: number,
+    @Param('areaId') areaId: number,
+    @Param('scheduleId') scheduleId: number,
+    @Query('user_id') userId?: string,
+    @Query('role') role?: string,
+  ) {
+    if (role?.toUpperCase() === 'OPERATOR' && userId) {
+      const hasAccess = await this.facilitiesService.checkOperatorAccess(
+        Number(userId),
+        areaId,
+      );
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'Bạn không có quyền xóa lịch trình khu vực này',
+        );
+      }
+    }
+
+    await this.facilitiesService.deleteSchedule(scheduleId);
+    return { status: 'success', message: 'Đã xóa lịch trình' };
   }
 }
