@@ -597,7 +597,9 @@ export function SchedulesPage() {
   };
 
   // ── Access check for current area ─────────────────────────────────────────
-  const canEdit = selectedArea ? canAccessArea(selectedArea) : false;
+  const isAdmin = currentUser?.role?.toUpperCase() === 'ADMIN';
+  // ADMIN luôn có toàn quyền; OPERATOR chỉ có quyền nếu được gán vào area đó
+  const canEdit = isAdmin || (selectedArea ? canAccessArea(selectedArea) : false);
 
   // ── Modal helpers ─────────────────────────────────────────────────────────
   const openCreate = (deviceId?: number) => {
@@ -705,6 +707,7 @@ export function SchedulesPage() {
       return a.operators?.some((op) => op.id === currentUser.id);
     }) ?? [];
 
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="p-6 md:p-8 space-y-6 min-h-screen bg-gray-50">
@@ -787,7 +790,9 @@ export function SchedulesPage() {
             <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
               <LayoutGrid className="w-10 h-10 mx-auto mb-3 text-gray-200" />
               <p className="text-sm text-gray-400">
-                Bạn không được gán vào khu vực nào trong kho này
+                {isAdmin
+                  ? 'Kho lạnh này chưa có khu vực nào. Vui lòng quay lại trang Quản lý kho để tạo khu vực trước khi lên lịch trình.'
+                  : 'Kho lạnh này chưa có khu vực nào. Vui lòng quay lại trang Kho lạnh để tạo khu vực trước khi lên lịch trình.'}
               </p>
             </div>
           ) : (
@@ -819,7 +824,7 @@ export function SchedulesPage() {
                 🥩 {selectedArea.current_food_type.food_name}
               </span>
             )}
-            {!canEdit && (
+            {!isAdmin && !canEdit && (
               <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" /> Chỉ xem — bạn không được gán
                 vào khu vực này
@@ -840,7 +845,7 @@ export function SchedulesPage() {
             <div className="bg-white rounded-xl border border-gray-100 p-16 text-center shadow-sm">
               <Cpu className="w-10 h-10 text-gray-200 mx-auto mb-3" />
               <p className="text-sm text-gray-400 font-semibold">
-                Khu vực này chưa có thiết bị có thể lên lịch
+                Hiện tại bạn chưa có lịch trình cho khu vực này
               </p>
             </div>
           ) : (

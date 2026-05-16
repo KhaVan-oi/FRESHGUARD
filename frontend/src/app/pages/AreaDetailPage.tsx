@@ -13,7 +13,8 @@ import {
 import {
   getWarehouses, getLatestSensors, getSensorHistory,
   updateAreaSettings, controlDevice, getFoodTypes,
-  createDevice, updateDevice, deleteDevice,
+  createDevice, updateDevice, deleteDevice, addFoodToArea,
+  getCurrentUser, canAccessArea,
   AreaApi, DeviceApi, SensorReadingApi, FoodTypeApi, WarehouseApi
 } from '../api/apiService';
 
@@ -57,6 +58,11 @@ export function AreaDetailPage() {
   const [selectedFoodTypeId, setSelectedFoodTypeId] = useState<number | null>(null);
   const [savingFood, setSavingFood] = useState(false);
   const [savingMode, setSavingMode] = useState(false);
+
+  // Phân quyền: ADMIN luôn có quyền; OPERATOR chỉ được nếu được gán vào area này
+  const currentUser = getCurrentUser();
+  const isAdmin = currentUser?.role?.toUpperCase() === 'ADMIN';
+  // canManageFood sẽ được cập nhật sau khi area được load
 
   // Controlling device (track which device is being controlled)
   const [controllingId, setControllingId] = useState<number | null>(null);
@@ -127,6 +133,9 @@ export function AreaDetailPage() {
   if (loading) return <div className="p-8 flex items-center justify-center min-h-screen text-gray-500">Đang tải dữ liệu...</div>;
   if (!area) return <div className="p-8 text-gray-500">Không tìm thấy khu vực</div>;
 
+  // Kiểm tra quyền quản lý thực phẩm: ADMIN toàn quyền, OPERATOR chỉ area của mình
+  const canManageFood = isAdmin || canAccessArea(area);
+
   const food = area.current_food_type;
   const sensors = area.devices.filter((d: DeviceApi) => d.device_type?.toUpperCase() === 'SENSOR' || d.device_type === 'TEMP' || d.device_type === 'HUMI');
   const actuators = area.devices.filter((d: DeviceApi) => d.device_type?.toUpperCase() === 'ACTUATOR');
@@ -175,11 +184,12 @@ export function AreaDetailPage() {
     if (!selectedFoodTypeId) return;
     setSavingFood(true);
     try {
-      const res = await updateAreaSettings(area.id, { current_food_type_id: selectedFoodTypeId });
-      setArea(res.data.data);
+      await addFoodToArea(area.id, selectedFoodTypeId);
+      // Reload để lấy food_types mới nhất
+      await fetchAll();
       setShowFoodModal(false);
-    } catch {
-      alert('Cập nhật thực phẩm thất bại!');
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Cập nhật thực phẩm thất bại!');
     } finally {
       setSavingFood(false);
     }
@@ -288,7 +298,15 @@ export function AreaDetailPage() {
             <p className="text-gray-500 text-sm mt-1">{warehouse?.warehouse_name}</p>
           </div>
           <div className="flex gap-3">
-            
+          <div className="flex gap-3">
+            {canManageFood && (
+              <button
+                onClick={() => setShowFoodModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Gán thực phẩm
+              </button>
+            )}
             <div className="flex flex-wrap gap-2">
               {area.food_types && area.food_types.map(f => (
                 <span key={f.id} className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
@@ -296,6 +314,7 @@ export function AreaDetailPage() {
                 </span>
               ))}
             </div>
+          </div>
           </div>
         </div>
 

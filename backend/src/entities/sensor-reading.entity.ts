@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Device } from './device.entity';
 
-@Entity('SENSOR_READINGS')
+@Entity('sensor_readings')
 export class SensorReading {
   @PrimaryGeneratedColumn()
   id: number;

@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Area } from './area.entity';
 
-@Entity('DEVICES')
+@Entity('devices')
 export class Device {
   @PrimaryGeneratedColumn()
   id: number;

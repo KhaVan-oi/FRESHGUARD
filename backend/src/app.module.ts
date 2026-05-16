@@ -17,10 +17,12 @@ import { TelemetryModule } from './telemetry/telemetry.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
-      port: 3306,
+      port: 3307,
       username: 'root',
-      password: '@Kv240105',
+      password: '123456',
       database: 'freshguard',
+      // Dùng timezone GMT+7 (Việt Nam) thay vì UTC để log hiển thị đúng giờ
+      timezone: '+07:00',
       // Tự động quét hết tất cả Entity trong các folder
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false, // Tự tạo bảng mới nếu chưa có

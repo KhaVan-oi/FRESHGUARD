@@ -13,7 +13,7 @@ import { Device } from './device.entity';
 import { FoodType } from './food-type.entity';
 import { User } from './user.entity';
 
-@Entity('AREAS')
+@Entity('areas')
 export class Area {
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { Area } from './area.entity';
 
-@Entity('FOOD_TYPES')
+@Entity('food_types')
 export class FoodType {
   @PrimaryGeneratedColumn()
   id: number;

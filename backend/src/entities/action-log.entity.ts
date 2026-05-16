@@ -2,30 +2,36 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Area } from './area.entity';
 import { Device } from './device.entity';
 
-@Entity('ACTION_LOGS')
+@Entity('action_logs')
 export class ActionLog {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  action_type: string; // VD: 'TURN_ON', 'CHANGE_FOOD', 'ALERT_HIGH_TEMP'
+  action_type: string;
 
   @Column()
-  action_value: string; // VD: 'Bật quạt', 'Đổi sang Thịt bò', 'Nhiệt độ lên 30 độ'
+  action_value: string;
 
   @Column()
-  trigger_source: string; // 3 loại: 'MANUAL', 'AUTO', 'SCHEDULE'
+  trigger_source: string;
 
-  @CreateDateColumn()
+  @Column({ type: 'datetime' })
   created_at: Date;
+
+  // Lưu thời gian UTC chuẩn — frontend convert sang giờ VN khi hiển thị
+  @BeforeInsert()
+  setCreatedAt() {
+    this.created_at = new Date(); // UTC thật, không giả lập timezone
+  }
 
   // Ai làm? (Có thể NULL nếu là AUTO hoặc SCHEDULE)
   @ManyToOne(() => User, { nullable: true })
@@ -36,10 +42,12 @@ export class ActionLog {
   @ManyToOne(() => Area)
   @JoinColumn({ name: 'area_id' })
   area: Area;
+
   // Thao tác trên Thiết bị nào? (Có thể NULL nếu thao tác đổi thực phẩm)
   @ManyToOne(() => Device, { nullable: true })
   @JoinColumn({ name: 'device_id' })
   device: Device;
+
   @Column({ default: false })
   is_resolved: boolean; // Trạng thái đã xử lý chưa?
 

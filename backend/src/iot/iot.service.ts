@@ -9,6 +9,10 @@ import { DeviceSchedule } from '../entities/device-schedule.entity';
 
 @Injectable()
 export class IotService {
+  // Biến static lưu các schedule ID đã xử lý trong phút hiện tại để chống trùng tuyệt đối
+  private static lastProcessedMinute: string = '';
+  private static processedScheduleIdsInMinute = new Set<number>();
+
   constructor(
     @InjectRepository(Device) private deviceRepo: Repository<Device>,
     @InjectRepository(ActionLog) private actionLogRepo: Repository<ActionLog>,
@@ -23,8 +27,6 @@ export class IotService {
   }
 
   async createDevice(data: Partial<Device> & { area?: { id: number } }) {
-    // ✅ FIX: TypeORM relation cần object { area: { id } }
-    // FE gửi { area: { id: number } } — đã được map đúng
     return await this.deviceRepo.save(this.deviceRepo.create(data));
   }
 
@@ -39,10 +41,8 @@ export class IotService {
   }
 
   async controlDevice(deviceId: string, action: string) {
-    // 1. Gửi lệnh xuống Adafruit
     this.mqttService.publishToAdafruit(deviceId, action);
 
-    // 2. Tìm thiết bị trong DB
     const device = await this.deviceRepo.findOne({
       where: { adafruit_feed_key: deviceId },
       relations: ['area'],
@@ -51,7 +51,6 @@ export class IotService {
     if (!device)
       throw new HttpException('Không tìm thấy thiết bị!', HttpStatus.NOT_FOUND);
 
-    // 3. Logic Nhường quyền Auto (Cooldown)
     let cooldownMsg = '';
     if (device.area) {
       const cooldownMins = (device.area as any).manual_override_mins || 30;
@@ -59,7 +58,6 @@ export class IotService {
       cooldownMsg = ` Auto nhường Sếp ${cooldownMins} phút.`;
     }
 
-    // 4. Ghi Log
     await this.actionLogRepo.save(
       this.actionLogRepo.create({
         device: device,
@@ -73,24 +71,43 @@ export class IotService {
     return cooldownMsg;
   }
 
+  // ⏰ HÀM CRON CHẠY TỰ ĐỘNG MỖI PHÚT - ĐÃ FIX MÚI GIỜ & CHỐNG DUPLICATE LOG
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    const now = new Date();
-    // Lấy giờ hiện tại định dạng HH:mm
-    const currentTime =
-      now.getHours().toString().padStart(2, '0') +
-      ':' +
-      now.getMinutes().toString().padStart(2, '0');
+    // 🌟 Lấy thời gian hiện tại theo Múi giờ Việt Nam (Asia/Ho_Chi_Minh)
+    const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false } as const;
+    const localDateStr = new Date().toLocaleString('en-US', options);
+    const localDate = new Date(localDateStr);
 
-    console.log(`⏰ [CRON] Đang quét lịch hẹn lúc: ${currentTime}`);
+    const currentTime =
+      localDate.getHours().toString().padStart(2, '0') +
+      ':' +
+      localDate.getMinutes().toString().padStart(2, '0');
+
+    console.log(`⏰ [CRON] Đang quét lịch hẹn lúc: ${currentTime} (Giờ Việt Nam)`);
+
+    // Reset danh sách ID đã quét nếu hệ thống bước sang phút mới
+    if (IotService.lastProcessedMinute !== currentTime) {
+      IotService.lastProcessedMinute = currentTime;
+      IotService.processedScheduleIdsInMinute.clear();
+    }
 
     // Tìm các lịch đang kích hoạt và khớp giờ bắt đầu
     const schedules = await this.scheduleRepo.find({
       where: { is_active: true, start_time: currentTime },
-      relations: ['device'],
+      relations: ['device', 'device.area'],
     });
 
     for (const schedule of schedules) {
+      // 🌟 GUARD CHỐNG DUPLICATE TUYỆT ĐỐI: Bỏ qua nếu ID lịch trình này đã chạy trong phút này
+      if (IotService.processedScheduleIdsInMinute.has(schedule.id)) {
+        console.warn(
+          `[CRON] Bỏ qua schedule ID=${schedule.id} — đã thực hiện xử lý trong phút này để tránh trùng log.`,
+        );
+        continue;
+      }
+      IotService.processedScheduleIdsInMinute.add(schedule.id);
+
       console.log(
         `🚀 [AUTO] Kích hoạt lệnh ${schedule.action} cho ${schedule.device.device_name}`,
       );
@@ -99,19 +116,19 @@ export class IotService {
         schedule.action,
       );
 
-      // Ghi Log hệ thống
+      // Lưu nhật ký hệ thống — Cam đoan ra đúng 1 dòng duy nhất và đúng múi giờ
       await this.actionLogRepo.save(
         this.actionLogRepo.create({
           action_type: 'AUTO_SCHEDULE',
           action_value: `Hệ thống tự động thực hiện lịch hẹn: ${schedule.action}`,
           trigger_source: 'SYSTEM',
           device: schedule.device,
+          area: schedule.device.area ?? undefined,
         }),
       );
     }
   }
 
-  // API CRUD Lịch hẹn cho người dùng chỉnh
   async createSchedule(data: any) {
     return await this.scheduleRepo.save(this.scheduleRepo.create(data));
   }
@@ -119,14 +136,13 @@ export class IotService {
   async getAllSchedules() {
     return await this.scheduleRepo.find({ relations: ['device'] });
   }
+
   async updateSchedule(id: number, body: any) {
-    // Tìm lịch trình theo ID và cập nhật
     await this.scheduleRepo.update(id, body);
     return await this.scheduleRepo.findOneBy({ id });
   }
 
   async removeSchedule(id: number) {
-    // Xóa lịch trình theo ID
     return await this.scheduleRepo.delete(id);
   }
 }

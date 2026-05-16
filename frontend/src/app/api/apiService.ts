@@ -194,17 +194,29 @@ export const getWarehouses = () => {
 export const getWarehouseById = (id: number) =>
   axiosClient.get<{ status: string; data: WarehouseApi }>(`/warehouses/${id}`);
 
-export const createWarehouse = (body: { warehouse_name: string }) =>
-  axiosClient.post<{ status: string; data: WarehouseApi }>("/warehouses", body);
+export const createWarehouse = (body: { warehouse_name: string }) => {
+  const user = getCurrentUser();
+  return axiosClient.post<{ status: string; data: WarehouseApi }>("/warehouses", {
+    ...body,
+    role: user?.role,
+  });
+};
 
-export const updateWarehouse = (id: number, body: { warehouse_name: string }) =>
-  axiosClient.put<{ status: string; data: WarehouseApi }>(
+export const updateWarehouse = (id: number, body: { warehouse_name: string }) => {
+  const user = getCurrentUser();
+  return axiosClient.put<{ status: string; data: WarehouseApi }>(
     `/warehouses/${id}`,
-    body,
+    { ...body, role: user?.role },
   );
+};
 
-export const deleteWarehouse = (id: number) =>
-  axiosClient.delete<{ status: string; message: string }>(`/warehouses/${id}`);
+export const deleteWarehouse = (id: number) => {
+  const user = getCurrentUser();
+  return axiosClient.delete<{ status: string; message: string }>(
+    `/warehouses/${id}`,
+    { params: { role: user?.role } },
+  );
+};
 
 // ================================================================
 // AREAS
@@ -236,9 +248,14 @@ export function updateAreaSettings(
     operator_id?: number | null;
   },
 ) {
+  const user = getCurrentUser();
   return axiosClient.put<{ status: string; message: string; data: AreaApi }>(
     `/areas/${areaId}/settings`,
-    body,
+    {
+      ...body,
+      role: user?.role,
+      user_id: user?.id,
+    },
   );
 }
 
@@ -271,6 +288,22 @@ export function updateFoodType(id: number, body: Partial<FoodTypeApi>) {
 
 export function deleteFoodType(id: number) {
   return axiosClient.delete<{ status: string }>(`/food-types/${id}`);
+}
+
+/**
+ * Gán loại thực phẩm vào khu vực.
+ * ADMIN: toàn quyền. OPERATOR: chỉ được gán cho area mình quản lý (BE kiểm tra).
+ */
+export function addFoodToArea(areaId: number, food_type_id: number) {
+  const user = getCurrentUser();
+  return axiosClient.post<{ status: string; message: string }>(
+    `/areas/${areaId}/add-food`,
+    {
+      food_type_id,
+      role: user?.role,
+      user_id: user?.id,
+    },
+  );
 }
 
 // ================================================================
