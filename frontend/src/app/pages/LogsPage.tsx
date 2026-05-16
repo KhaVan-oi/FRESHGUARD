@@ -3,6 +3,22 @@ import React, { useState, useEffect } from "react";
 import { Search, Settings, Power, Thermometer, Droplets, User as UserIcon, Calendar, ClipboardList } from "lucide-react";
 import { getActionLogs, ActionLogApi } from "../api/apiService";
 
+/**
+ * Parse datetime string từ backend thành Date object đúng UTC.
+ * Backend trả về "2026-05-17T13:05:00" (không có 'Z' hay offset),
+ * JavaScript sẽ tự hiểu là local time thay vì UTC → bị lệch 7 giờ.
+ * Hàm này đảm bảo luôn parse đúng là UTC bằng cách thêm 'Z' nếu thiếu.
+ */
+function parseUTC(dateStr: string): Date {
+  if (!dateStr) return new Date(NaN);
+  // Nếu đã có timezone info (Z, +, -) thì parse bình thường
+  if (/[Zz]$/.test(dateStr) || /[+-]\d{2}:\d{2}$/.test(dateStr)) {
+    return new Date(dateStr);
+  }
+  // Không có timezone → backend lưu UTC nhưng thiếu 'Z', thêm vào
+  return new Date(dateStr + "Z");
+}
+
 export function LogsPage() {
   const [logs, setLogs] = useState<ActionLogApi[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +47,7 @@ export function LogsPage() {
 
     // Lọc theo ngày
     if (filterDate) {
-      const logDate = new Date(log.created_at).toISOString().split('T')[0];
+      const logDate = parseUTC(log.created_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }); // en-CA = yyyy-mm-dd
       if (logDate !== filterDate) return false;
     }
 
@@ -133,10 +149,10 @@ export function LogsPage() {
               <div className="flex items-center gap-6">
                 <div className="w-24 border-r border-gray-100 pr-4">
                   <p className="font-bold text-gray-900 text-base">
-                    {new Date(log.created_at).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+                    {parseUTC(log.created_at).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Ho_Chi_Minh" })}
                   </p>
                   <p className="text-[11px] text-gray-400 font-medium">
-                    {new Date(log.created_at).toLocaleDateString("vi-VN")}
+                    {parseUTC(log.created_at).toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}
                   </p>
                 </div>
                 <div className="space-y-1">

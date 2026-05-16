@@ -13,13 +13,15 @@ import {
 } from '../components/ui/breadcrumb';
 import {
   getWarehouses, createWarehouse, updateWarehouse, deleteWarehouse,
-  WarehouseApi,
+  getCurrentUser, WarehouseApi,
 } from '../api/apiService';
 
 type ModalMode = 'create' | 'edit' | null;
 
 export function WarehousesPage() {
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
+  const isAdmin = currentUser?.role?.toUpperCase() === 'ADMIN';
   const [warehouses, setWarehouses] = useState<WarehouseApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -165,12 +167,14 @@ export function WarehousesPage() {
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
-          <button
-            onClick={openCreate}
-            className="flex items-center gap-2 bg-[#2ECC71] hover:bg-[#27AE60] text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-sm active:scale-95"
-          >
-            <Plus className="w-5 h-5" /> Thêm kho mới
-          </button>
+          {isAdmin && (
+            <button
+              onClick={openCreate}
+              className="flex items-center gap-2 bg-[#2ECC71] hover:bg-[#27AE60] text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-sm active:scale-95"
+            >
+              <Plus className="w-5 h-5" /> Thêm kho mới
+            </button>
+          )}
         </div>
       </div>
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
@@ -201,26 +205,28 @@ export function WarehousesPage() {
                 onClick={() => navigate(`/warehouses/${wh.id}`)}
                 className="group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-[#2ECC71]/40 transition-all cursor-pointer"
               >
-                {/* Action buttons — hiện khi hover */}
-                <div
-                  className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                  onClick={e => e.stopPropagation()}
-                >
-                  <button
-                    onClick={e => openEdit(wh, e)}
-                    title="Đổi tên kho"
-                    className="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors"
+                {/* Action buttons — hiện khi hover, chỉ ADMIN */}
+                {isAdmin && (
+                  <div
+                    className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    onClick={e => e.stopPropagation()}
                   >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={e => handleDelete(wh, e)}
-                    title="Xóa kho"
-                    className="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                    <button
+                      onClick={e => openEdit(wh, e)}
+                      title="Đổi tên kho"
+                      className="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={e => handleDelete(wh, e)}
+                      title="Xóa kho"
+                      className="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
 
                 {/* Card header */}
                 <div className="flex items-start gap-4 mb-5 pr-16">

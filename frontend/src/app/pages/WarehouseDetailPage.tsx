@@ -7,7 +7,8 @@ import {
 import { useState, useEffect } from 'react';
 import {
   getWarehouses, updateAreaSettings, getFoodTypes, getUsers,
-  assignOperator, WarehouseApi, AreaApi, FoodTypeApi, UserApi
+  assignOperator, getCurrentUser, canAccessArea,
+  WarehouseApi, AreaApi, FoodTypeApi, UserApi
 } from '../api/apiService';
 import axiosClient from '../api/axiosClient';
 import {
@@ -20,6 +21,10 @@ export function WarehouseDetailPage() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('current_user') ?? '{}');
   const isAdmin = currentUser?.role?.toUpperCase() === 'ADMIN';
+
+  /** Kiểm tra OPERATOR có thể edit area này không (phải được gán vào area đó) */
+  const canEditArea = (area: AreaApi) =>
+    isAdmin || canAccessArea(area);
   const [warehouse, setWarehouse] = useState<WarehouseApi | null>(null);
   const [foodTypes, setFoodTypes] = useState<FoodTypeApi[]>([]);
   const [operators, setOperators] = useState<UserApi[]>([]);
@@ -159,9 +164,10 @@ export function WarehouseDetailPage() {
           operating_mode: formData.operating_mode,
           auto_door_timeout_sec: formData.auto_door_timeout_sec,
           manual_override_mins: formData.manual_override_mins,
-          operator_id: formData.operator_id || null,
+          // Chỉ gửi operator_id khi là ADMIN (BE cũng strip nếu là OPERATOR, nhưng rõ ràng hơn)
+          ...(isAdmin && { operator_id: formData.operator_id || null }),
         });
-        if (formData.operator_id) {
+        if (isAdmin && formData.operator_id) {
           await assignOperator(editingArea.id, formData.operator_id as number);
         }
       } else {
@@ -282,7 +288,8 @@ export function WarehouseDetailPage() {
                   }`}
                 >
                   {/* Edit/Delete buttons — hiện khi hover */}
-                  {isAdmin && (
+                  {/* Edit: ADMIN + OPERATOR được gán; Delete: chỉ ADMIN */}
+                  {canEditArea(area) && (
                     <div
                       className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                       onClick={e => e.stopPropagation()}
@@ -294,13 +301,15 @@ export function WarehouseDetailPage() {
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
-                      <button
-                        onClick={e => handleDeleteArea(area, e)}
-                        className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors"
-                        title="Xóa khu vực"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={e => handleDeleteArea(area, e)}
+                          className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors"
+                          title="Xóa khu vực"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   )}
 

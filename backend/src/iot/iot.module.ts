@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IotController } from './iot.controller';
 import { IotService } from './iot.service';
@@ -12,7 +11,7 @@ import { AppGateway } from '../gateway/app.gateway';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
+    // 🌟 ĐÃ XÓA ScheduleModule.forRoot() ở đây để tránh chạy song song trùng lặp lệnh
     TypeOrmModule.forFeature([
       Device,
       DeviceSchedule,

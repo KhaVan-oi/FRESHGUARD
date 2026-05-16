@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, IsNull } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as mqtt from 'mqtt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AppGateway } from '../gateway/app.gateway';
@@ -400,93 +400,6 @@ export class MqttService implements OnModuleInit {
     const adafruitUser = process.env.ADAFRUIT_USERNAME;
     if (!adafruitUser) return;
     this.client.publish(`${adafruitUser}/feeds/${feedKey}`, value);
-  }
-
-  @Cron(CronExpression.EVERY_MINUTE)
-  async dynamicScheduledControl() {
-    const now = new Date();
-    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-    // 1. Lấy tất cả thiết bị có cài đặt lịch, kèm thông tin Khu vực & Thực phẩm
-    const devices = await this.deviceRepo.find({
-      where: [
-        { schedule_on_time: Not(IsNull()) },
-        { schedule_off_time: Not(IsNull()) },
-      ],
-      relations: ['area', 'area.food_types'],
-    });
-
-    for (const device of devices) {
-      const area = device.area;
-      if (!area) continue;
-
-      // THỰC THI THỨ TỰ ƯU TIÊN BR-13
-
-      // ƯU TIÊN 1: Nếu Khu vực đang có Manual Override -> Bỏ qua lịch của thiết bị này
-      if (this.manualOverrides.has(area.id)) {
-        console.log(
-          `[Lập lịch] Thiết bị ${device.device_name}: Tạm dừng vì Sếp đang chiếm quyền tại ${area.area_name}.`,
-        );
-        continue;
-      }
-      const isCritical = await this.checkIfAreaIsCritical(area);
-      if (isCritical) {
-        console.log(
-          `[Lập lịch] Thiết bị ${device.device_name}: Tạm dừng vì Auto đang xử lý sự cố môi trường.`,
-        );
-        continue;
-      }
-
-      // NẾU RẢNH RỖI -> THỰC THI LỊCH CHO TỪNG CON
-      if (currentTime === device.schedule_on_time) {
-        console.log(
-          `Lập lịch: BẬT ${device.device_name} tại ${area.area_name}`,
-        );
-        this.publishToAdafruit(device.adafruit_feed_key, 'ON');
-      } else if (currentTime === device.schedule_off_time) {
-        console.log(
-          `Lập lịch: TẮT ${device.device_name} tại ${area.area_name}`,
-        );
-        this.publishToAdafruit(device.adafruit_feed_key, 'OFF');
-      }
-    }
-  }
-  private async checkIfAreaIsCritical(area: any): Promise<boolean> {
-    if (!area.food_types || area.food_types.length === 0) return false;
-
-    // Lấy thông số cảm biến mới nhất của Khu vực này
-    const latestReading = await this.readingRepo.findOne({
-      where: { device: { area: { id: area.id } } },
-      order: { recorded_at: 'DESC' },
-    });
-
-    if (!latestReading) return false;
-
-    // Tính vùng an toàn
-    const safeZone = area.food_types.reduce(
-      (acc, f) => ({
-        maxT: Math.min(acc.maxT, f.max_temp),
-        minT: Math.max(acc.minT, f.min_temp),
-        maxH: Math.min(acc.maxH, f.max_humi),
-        minH: Math.max(acc.minH, f.min_humi),
-      }),
-      { maxT: 99, minT: -99, maxH: 100, minH: 0 },
-    );
-
-    // Đọ số liệu xem có đang cháy/nóng/ẩm quá không
-    if (latestReading.sensor_type === 'TEMP') {
-      return (
-        latestReading.reading_value > safeZone.maxT ||
-        latestReading.reading_value < safeZone.minT
-      );
-    } else if (latestReading.sensor_type === 'HUMI') {
-      return (
-        latestReading.reading_value > safeZone.maxH ||
-        latestReading.reading_value < safeZone.minH
-      );
-    }
-
-    return false;
   }
 
   // ==========================================

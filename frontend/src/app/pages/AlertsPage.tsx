@@ -414,7 +414,7 @@ export function AlertsPage() {
                               : "text-yellow-600 bg-yellow-100"
                         }`}
                       >
-                        {new Date(log.created_at).toLocaleString("vi-VN")}
+                        {new Date(log.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}
                       </span>
                     </div>
                     <p
@@ -489,7 +489,7 @@ export function AlertsPage() {
                         {log.action_type}
                       </span>
                       <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
-                        Tạo: {new Date(log.created_at).toLocaleString("vi-VN")}
+                        Tạo: {new Date(log.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}
                       </span>
                       <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase">
                         Resolved
@@ -529,7 +529,7 @@ export function AlertsPage() {
                     </p>
                     <p className="text-xs font-semibold text-gray-700">
                       {log.resolved_at
-                        ? new Date(log.resolved_at).toLocaleString("vi-VN")
+                        ? new Date(log.resolved_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })
                         : "---"}
                     </p>
                   </div>

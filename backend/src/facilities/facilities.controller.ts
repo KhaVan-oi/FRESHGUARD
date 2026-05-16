@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
 import { FacilitiesService } from './facilities.service';
 import { Warehouse } from '../entities/warehouse.entity';
@@ -15,6 +16,8 @@ import { Area } from '../entities/area.entity';
 import { FoodType } from '../entities/food-type.entity';
 import { Req } from '@nestjs/common';
 import type { Request } from 'express';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('api')
 export class FacilitiesController {
@@ -48,7 +51,9 @@ export class FacilitiesController {
   }
 
   @Post('warehouses')
-  async createWarehouse(@Body() body: Partial<Warehouse>) {
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
+  async createWarehouse(@Body() body: Partial<Warehouse> & { role?: string }) {
     return {
       status: 'success',
       data: await this.facilitiesService.createWarehouse(body),
@@ -56,9 +61,11 @@ export class FacilitiesController {
   }
 
   @Put('warehouses/:id')
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   async updateWarehouse(
     @Param('id') id: number,
-    @Body() body: Partial<Warehouse>,
+    @Body() body: Partial<Warehouse> & { role?: string },
   ) {
     return {
       status: 'success',
@@ -67,7 +74,12 @@ export class FacilitiesController {
   }
 
   @Delete('warehouses/:id')
-  async deleteWarehouse(@Param('id') id: number) {
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
+  async deleteWarehouse(
+    @Param('id') id: number,
+    @Query('role') role?: string,
+  ) {
     await this.facilitiesService.deleteWarehouse(id);
     return { status: 'success', message: 'Đã xóa kho lạnh' };
   }
@@ -97,7 +109,30 @@ export class FacilitiesController {
   }
 
   @Put('areas/:id/settings')
-  async updateAreaSettings(@Param('id') id: number, @Body() body: any) {
+  @Roles('ADMIN', 'OPERATOR')
+  @UseGuards(RolesGuard)
+  async updateAreaSettings(
+    @Param('id') id: number,
+    @Body() body: any,
+  ) {
+    const role: string = body.role ?? '';
+    const userId: number | undefined = body.user_id;
+
+    // OPERATOR: kiểm tra họ có được gán vào khu vực này không
+    if (role.toUpperCase() === 'OPERATOR' && userId) {
+      const hasAccess = await this.facilitiesService.checkOperatorAccess(
+        Number(userId),
+        id,
+      );
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'Bạn không có quyền chỉnh sửa khu vực này',
+        );
+      }
+      // OPERATOR không được thay đổi người phụ trách → loại bỏ operator_id
+      delete body.operator_id;
+    }
+
     const data = await this.facilitiesService.updateAreaSettings(id, body);
     return { status: 'success', message: 'Đã cập nhật Khu vực!', data };
   }
@@ -115,10 +150,26 @@ export class FacilitiesController {
   }
 
   @Post('areas/:id/add-food')
+  @Roles('ADMIN', 'OPERATOR')
+  @UseGuards(RolesGuard)
   async addFood(
     @Param('id') id: number,
     @Body('food_type_id') foodTypeId: number,
+    @Body('role') role?: string,
+    @Body('user_id') userId?: number,
   ) {
+    // Nếu là OPERATOR, kiểm tra họ có được gán vào khu vực này không
+    if (role?.toUpperCase() === 'OPERATOR' && userId) {
+      const hasAccess = await this.facilitiesService.checkOperatorAccess(
+        Number(userId),
+        id,
+      );
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'Bạn không có quyền gán thực phẩm cho khu vực này',
+        );
+      }
+    }
     return await this.facilitiesService.addFoodToArea(id, foodTypeId);
   }
 
